@@ -65,6 +65,17 @@ Arquitetura e desenho de produção no GCP: [docs/architecture.md](docs/architec
 
 Requisitos: [uv](https://docs.astral.sh/uv/), Node 20+ e uma chave da Anthropic.
 
+**Atalho: tudo com um comando, a partir da raiz**
+
+```bash
+cp backend/.env.example backend/.env          # preencha ANTHROPIC_API_KEY
+cp frontend/.env.example frontend/.env.local
+npm install && npm run setup                  # dependências + indexação (baixa ~2 GB uma vez)
+npm run dev                                   # API :8000 + interface http://localhost:3000
+```
+
+Ou, separadamente:
+
 **API**
 
 ```bash
