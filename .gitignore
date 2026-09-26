@@ -1,0 +1,44 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local artefacts
+backend/.models/
+backend/.chroma/
+backend/.runtime/
+
+# Node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.vercel/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local tooling
+.claude/
+CLAUDE.md
+
+# Challenge brief (not redistributed)
+*.pdf

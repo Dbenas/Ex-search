@@ -1,0 +1,3 @@
+"""Executive talent curation agent."""
+
+__version__ = "0.1.0"
