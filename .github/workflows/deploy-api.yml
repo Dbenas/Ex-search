@@ -18,6 +18,8 @@ env:
 
 jobs:
   deploy:
+    # Skipped until the GCP project is provisioned (see infra/terraform).
+    if: vars.GCP_PROJECT_ID != ''
     runs-on: ubuntu-latest
     environment: production
     steps:
