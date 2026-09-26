@@ -1,0 +1,4 @@
+project_id        = "my-gcp-project"
+region            = "southamerica-east1"
+github_repository = "owner/curadoria-executiva"
+frontend_origin   = "https://curadoria.vercel.app"
