@@ -1,5 +1,6 @@
 import type { MatchReport, ScoreWeights } from "@/lib/types";
 import { CandidateDossier } from "./candidate-dossier";
+import { DownloadDossier } from "./dossier/download-dossier";
 import { CoverageMap, SearchPlanView } from "./search-plan";
 import { WeightTuner } from "./weight-tuner";
 
@@ -35,9 +36,12 @@ export function MatchReportView({ report, onRerun, rerunning }: Props) {
   return (
     <div className="space-y-6">
       <section className="animate-rise rounded-xl border border-rule bg-paper px-5 py-6 sm:px-7">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
-          Mandato · {job.role_title}
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+            Mandato · {job.role_title}
+          </p>
+          <DownloadDossier report={report} />
+        </div>
         <p className="mt-2 font-display text-[21px] font-medium leading-snug tracking-[-0.015em]">
           {job.mandate}
         </p>

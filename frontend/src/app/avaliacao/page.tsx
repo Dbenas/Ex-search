@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { backendJson } from "@/lib/backend";
 import type { BiasAudit, EvaluationReport } from "@/lib/types";
 import { BiasAuditView } from "@/components/bias-audit";
+import { DownloadDossier } from "@/components/dossier/download-dossier";
 
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 const num = (v: number | null | undefined, digits = 1) =>
@@ -177,6 +178,7 @@ export default async function EvaluationPage() {
                         {c.hit_at_1 ? "ACERTO" : "ERRO"}
                       </span>
                       <h3 className="font-display text-lg font-semibold">{c.title}</h3>
+                      <DownloadDossier report={c.report} className="ml-auto" />
                     </header>
                     <div className="space-y-4 px-6 py-5">
                       <ol className="space-y-1.5 text-sm">

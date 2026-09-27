@@ -42,3 +42,4 @@ CLAUDE.md
 
 # Challenge brief (not redistributed)
 *.pdf
+!docs/exemplos/*.pdf

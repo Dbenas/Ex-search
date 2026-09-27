@@ -85,6 +85,13 @@ marcas agora são neutralizadas no texto que o modelo lê; o sócio continua ven
 Um teste contrafactual opcional (`--empirical`, pede confirmação do custo) mede quanto essas
 marcas moveriam a nota sem a neutralização.
 
+**"Como levo isso para o comitê?"** Cada parecer vira um dossiê em PDF, em formato de
+memorando confidencial: mandato, leitura do shortlist, próximos passos, uma seção por
+candidato com as citações conferidas no currículo, cobertura dos requisitos, plano de busca
+e uma nota de metodologia. O PDF é gerado no navegador, sem enviar o parecer a outro
+serviço. Exemplos: [parecer CTO](docs/exemplos/parecer-cto.pdf) ·
+[parecer CFO](docs/exemplos/parecer-cfo.pdf).
+
 ## Stack e por quê
 
 | Escolha | Motivo |
