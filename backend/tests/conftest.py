@@ -15,6 +15,8 @@ from curator.domain.models import (
     JobProfile,
     MatchNarrative,
     Requirement,
+    SearchPlan,
+    TargetProfile,
 )
 from curator.service import CurationService, build_service
 
@@ -65,7 +67,7 @@ class FakeLLM:
                 soft_skills=dim,
                 context_fit=dim,
                 evidence=[
-                    Evidence(requirement="trajetória", claim="Experiência", quote=first_sentence),
+                    Evidence(requirement="IA e dados", claim="Experiência", quote=first_sentence),
                     Evidence(requirement="IA", claim="Inventado", quote="PhD em robótica pelo MIT"),
                 ],
                 gaps=["Sem evidência de board"],
@@ -85,6 +87,16 @@ class FakeLLM:
                     )
                     for a in aliases
                 ],
+            )
+        if schema is SearchPlan:
+            return SearchPlan(
+                diagnosis="A base não cobre adaptabilidade.",
+                target_profiles=[
+                    TargetProfile(archetype="CTO de scale-up", rationale="r", trade_off="t")
+                ],
+                source_segments=["SaaS B2B"],
+                boolean_queries=['("CTO") AND ("IA")'],
+                screening_questions=["Que arquitetura você construiu do zero?"],
             )
         raise AssertionError(f"unexpected schema {schema}")
 

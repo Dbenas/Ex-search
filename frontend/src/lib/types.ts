@@ -43,12 +43,44 @@ export type RankedCandidate = {
   profile_text: string;
 };
 
+export type Dimension = "hard_skills" | "soft_skills" | "context_fit";
+
+export type ScoreWeights = Record<Dimension, number>;
+
+export type CandidateScores = {
+  candidate_id: string;
+  name: string;
+  scores: Record<Dimension, number>;
+  grounding_rate: number;
+  retrieval_score: number;
+  final_score: number;
+};
+
+export type RequirementCoverage = {
+  requirement: string;
+  kind: "hard" | "soft";
+  status: "lider" | "outros" | "ninguem";
+  covered_by: string[];
+};
+
+export type SearchPlan = {
+  diagnosis: string;
+  target_profiles: { archetype: string; rationale: string; trade_off: string }[];
+  source_segments: string[];
+  boolean_queries: string[];
+  screening_questions: string[];
+};
+
 export type MatchReport = {
   job: JobProfile;
   executive_summary: string;
   next_steps: string[];
   top_candidates: RankedCandidate[];
   also_considered: { candidate_id: string; name: string; final_score: number; reason: string }[];
+  weights: ScoreWeights;
+  assessed: CandidateScores[];
+  coverage: RequirementCoverage[];
+  search_plan: SearchPlan | null;
   metadata: {
     run_id: string;
     model: string;
@@ -62,7 +94,14 @@ export type MatchReport = {
   };
 };
 
-export type StageName = "sanitize" | "analyze_job" | "retrieve" | "assess" | "rank" | "synthesize";
+export type StageName =
+  | "sanitize"
+  | "analyze_job"
+  | "retrieve"
+  | "assess"
+  | "rank"
+  | "synthesize"
+  | "plan_search";
 
 export type StageEvent = {
   type: "stage";

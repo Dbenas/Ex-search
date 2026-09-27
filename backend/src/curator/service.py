@@ -14,10 +14,13 @@ from curator.agent.usage import UsageMeter, current_meter
 from curator.config import Settings
 from curator.domain.models import (
     CandidateNarrative,
+    CandidateScores,
     MatchReport,
     RankedCandidate,
+    RequirementCoverage,
     RunMetadata,
     ScoredCandidate,
+    ScoreWeights,
 )
 from curator.ingestion.loader import CandidateRepository
 from curator.ingestion.pipeline import ingest
@@ -43,11 +46,15 @@ class CurationService:
     def model(self) -> str:
         return self._deps.llm.model
 
-    async def stream(self, job_description: str) -> AsyncGenerator[Event]:
+    async def stream(
+        self, job_description: str, weights: ScoreWeights | None = None
+    ) -> AsyncGenerator[Event]:
         """Yields one event per completed step, then the final report."""
         run_id = uuid.uuid4().hex[:12]
         started = time.perf_counter()
         state: CurationState = {"job_description": job_description, "llm_calls": 0}
+        if weights is not None:
+            state["weights"] = weights
         meter = UsageMeter()
         meter_token = current_meter.set(meter)
         structlog.contextvars.bind_contextvars(run_id=run_id)
@@ -71,8 +78,8 @@ class CurationService:
             with suppress(ValueError):
                 current_meter.reset(meter_token)
 
-    async def run(self, job_description: str) -> MatchReport:
-        async with aclosing(self.stream(job_description)) as events:
+    async def run(self, job_description: str, weights: ScoreWeights | None = None) -> MatchReport:
+        async with aclosing(self.stream(job_description, weights)) as events:
             async for event in events:
                 if event["type"] == "report":
                     return MatchReport.model_validate(event["report"])
@@ -124,6 +131,12 @@ class CurationService:
                 }
             case "synthesize":
                 return {"message": "Parecer consultivo redigido", "data": {}}
+            case "plan_search":
+                plan = delta["search_plan"]
+                return {
+                    "message": f"Plano de busca com {len(plan.target_profiles)} perfis-alvo",
+                    "data": {},
+                }
         return {"message": node, "data": {}}
 
     def _build_report(
@@ -153,6 +166,32 @@ class CurationService:
             next_steps=[pseudo.reidentify(step) for step in state["narrative"].next_steps],
             top_candidates=top,
             also_considered=also_considered,
+            weights=state["weights"],
+            assessed=[
+                CandidateScores(
+                    candidate_id=c.candidate_id,
+                    name=repo.identity(c.candidate_id).name,
+                    scores={
+                        "hard_skills": c.assessment.hard_skills.score,
+                        "soft_skills": c.assessment.soft_skills.score,
+                        "context_fit": c.assessment.context_fit.score,
+                    },
+                    grounding_rate=c.grounding_rate,
+                    retrieval_score=c.retrieval_score,
+                    final_score=c.final_score,
+                )
+                for c in ranking
+            ],
+            coverage=[
+                RequirementCoverage(
+                    requirement=c.requirement,
+                    kind=c.kind,
+                    status=c.status,
+                    covered_by=[repo.identity(cid).name for cid in c.covered_by],
+                )
+                for c in state.get("coverage", [])
+            ],
+            search_plan=state.get("search_plan"),
             metadata=RunMetadata(
                 run_id=run_id,
                 model=self._deps.llm.model,

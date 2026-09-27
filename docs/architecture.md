@@ -31,7 +31,9 @@ flowchart LR
     C -->|Send · 1 por candidato| D1[assess]
     C --> D2[assess]
     C --> D3[assess]
-    D1 & D2 & D3 --> E[rank] --> F[synthesize]
+    D1 & D2 & D3 --> E[rank]
+    E --> F[synthesize]
+    E -.->|base não cobre o mandato| G[plan_search]
 ```
 
 | Nó | Tipo | O que faz |
@@ -40,8 +42,9 @@ flowchart LR
 | `analyze_job` | LLM | Estrutura o mandato: requisitos essenciais/desejáveis e consultas de busca |
 | `retrieve` | código | Busca híbrida com várias consultas (vaga + mandato + consultas geradas) |
 | `assess` | LLM, paralelo | Nota por dimensão, evidências com citação literal, lacunas, pontos de entrevista |
-| `rank` | código | Confere cada citação no CV, calcula a nota ponderada e ordena |
+| `rank` | código | Confere cada citação no CV, calcula a nota ponderada (pesos por execução), ordena e mapeia a cobertura dos requisitos essenciais |
 | `synthesize` | LLM | Parecer comparativo usando só evidências confirmadas |
+| `plan_search` | LLM, condicional | Perfis-alvo, segmentos, buscas booleanas e triagem; roda em paralelo ao parecer quando o líder é fraco ou deixa essenciais descobertos |
 
 O LLM entra onde há julgamento. Busca, verificação e ranking ficam em código: são
 determinísticos, testáveis e auditáveis.

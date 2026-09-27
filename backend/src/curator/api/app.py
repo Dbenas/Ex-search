@@ -107,7 +107,7 @@ def create_app(
         _: RateLimited,
     ) -> MatchReport:
         try:
-            return await svc.run(body.job_description)
+            return await svc.run(body.job_description, body.weights)
         except LLMError as exc:
             raise HTTPException(status.HTTP_502_BAD_GATEWAY, str(exc)) from exc
         except CurationError as exc:
@@ -121,7 +121,7 @@ def create_app(
     ) -> EventSourceResponse:
         async def events() -> AsyncIterator[dict[str, str]]:
             try:
-                async for event in svc.stream(body.job_description):
+                async for event in svc.stream(body.job_description, body.weights):
                     yield {"event": event["type"], "data": json.dumps(event, ensure_ascii=False)}
             except (LLMError, CurationError) as exc:
                 yield {"event": "error", "data": json.dumps({"type": "error", "message": str(exc)})}

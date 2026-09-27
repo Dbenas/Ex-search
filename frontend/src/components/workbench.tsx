@@ -97,7 +97,14 @@ export function Workbench() {
           </div>
         )}
         {report ? (
-          <MatchReportView report={report} />
+          <MatchReportView
+            report={report}
+            rerunning={running}
+            onRerun={(weights) => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              run(text.trim(), weights);
+            }}
+          />
         ) : (
           <EmptyState running={running} />
         )}

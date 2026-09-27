@@ -2,9 +2,12 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from curator.domain.models import ScoreWeights
+
 
 class MatchRequest(BaseModel):
     job_description: str = Field(min_length=80, max_length=8_000)
+    weights: ScoreWeights | None = None
 
 
 class CandidateSummary(BaseModel):

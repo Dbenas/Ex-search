@@ -30,6 +30,8 @@ Pareceres completos, notas do juiz automático e análise crítica em
 ```
 vaga ─▶ remove PII ─▶ lê o mandato ─▶ busca híbrida ─▶ avalia cada perfil ─▶ verifica ─▶ parecer
                        (LLM)          (e5 + BM25)      (LLM, em paralelo)   evidências   (LLM)
+                                                                            e cobertura  ─▶ plano de busca
+                                                                                            (LLM, se preciso)
 ```
 
 1. **Proteção de dados.** Contatos e nomes são removidos da vaga. O modelo só vê perfis
@@ -51,6 +53,27 @@ Cada análise registra tokens e custo estimado: com Claude Opus 5, cerca de 53 s
 para 4 candidatos.
 
 Arquitetura e desenho de produção no GCP: [docs/architecture.md](docs/architecture.md).
+
+## Além do pedido
+
+O desafio pede um Top 3 com justificativa. Duas perguntas que um sócio faria em seguida
+também são respondidas:
+
+**"Essa indicação depende do critério?"** O painel *E se o critério fosse outro?* reordena
+o ranking na hora quando o sócio muda o peso de hard skills, soft skills e fit de contexto,
+usando as notas já atribuídas, sem nova chamada ao modelo. Um índice de robustez varre
+todas as combinações de pesos (grade de 5%) e informa em quantas o 1º lugar se mantém. Nas
+duas vagas de teste, Carolina e Ana lideram em 100% das combinações: a indicação não
+depende de preferência de critério. Se o sócio quiser outro critério, um botão refaz o
+parecer com os novos pesos.
+
+**"E se a base não tiver o nome certo?"** Um mapa de cobertura, calculado em código só com
+evidências verificadas, mostra cada requisito essencial como coberto pelo 1º colocado, só
+por perfis secundários ou sem evidência na base. Quando o líder fica abaixo de 80 ou deixa
+essenciais descobertos, o agente gera, em paralelo ao parecer, um **plano de busca**:
+arquétipos de perfil com seus trade-offs, segmentos de origem, buscas booleanas prontas
+para o LinkedIn Recruiter e perguntas de triagem. É o elo entre a curadoria e o hunting
+ativo.
 
 ## Stack e por quê
 
@@ -109,7 +132,7 @@ uv run curator evaluate                 # vagas de teste + juiz; grava reports/e
 **Qualidade**
 
 ```bash
-uv run pytest                 # 28 testes; o LLM é substituído por um fake determinístico
+uv run pytest                 # 33 testes; o LLM é substituído por um fake determinístico
 uv run ruff check . && uv run mypy src
 ```
 

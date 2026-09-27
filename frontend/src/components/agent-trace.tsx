@@ -35,6 +35,13 @@ const STEPS: { stage: StageName; title: string; purpose: string }[] = [
   },
 ];
 
+// Only runs when the base does not cover the mandate; shown once it happens.
+const PLAN_STEP = {
+  stage: "plan_search" as const,
+  title: "Plano de busca",
+  purpose: "Perfis-alvo e buscas para cobrir o que a base não tem.",
+};
+
 type Props = { stages: StageEvent[]; running: boolean };
 
 export function AgentTrace({ stages, running }: Props) {
@@ -43,7 +50,8 @@ export function AgentTrace({ stages, running }: Props) {
     stages.find((s) => s.stage === "retrieve")?.data.shortlist as unknown[] | undefined
   )?.length;
   const assessed = stages.filter((s) => s.stage === "assess").length;
-  const activeIndex = running ? STEPS.findIndex((step) => !isDone(step.stage)) : -1;
+  const steps = done.has("plan_search") ? [...STEPS, PLAN_STEP] : STEPS;
+  const activeIndex = running ? steps.findIndex((step) => !isDone(step.stage)) : -1;
 
   function isDone(stage: StageName) {
     if (stage === "assess") return shortlistSize !== undefined && assessed >= shortlistSize;
@@ -57,13 +65,13 @@ export function AgentTrace({ stages, running }: Props) {
 
   return (
     <ol className="relative space-y-0" aria-live="polite">
-      {STEPS.map((step, index) => {
+      {steps.map((step, index) => {
         const complete = isDone(step.stage);
         const active = index === activeIndex;
         const info = detail(step.stage);
         return (
           <li key={step.stage} className="relative flex gap-3 pb-5 last:pb-0">
-            {index < STEPS.length - 1 && (
+            {index < steps.length - 1 && (
               <span
                 aria-hidden
                 className={clsx(

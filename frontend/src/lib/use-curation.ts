@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import type { MatchReport, StageEvent, StreamEvent } from "./types";
+import type { MatchReport, ScoreWeights, StageEvent, StreamEvent } from "./types";
 
 type Status = "idle" | "running" | "done" | "error";
 
@@ -35,7 +35,7 @@ export function useCuration() {
   const [error, setError] = useState<string | null>(null);
   const controller = useRef<AbortController | null>(null);
 
-  const run = useCallback(async (jobDescription: string) => {
+  const run = useCallback(async (jobDescription: string, weights?: ScoreWeights) => {
     controller.current?.abort();
     controller.current = new AbortController();
     setStatus("running");
@@ -47,7 +47,7 @@ export function useCuration() {
       const res = await fetch("/api/match", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ job_description: jobDescription }),
+        body: JSON.stringify({ job_description: jobDescription, weights }),
         signal: controller.current.signal,
       });
       if (!res.ok || !res.body) {

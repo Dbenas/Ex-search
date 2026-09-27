@@ -1,7 +1,8 @@
 """Curation workflow as a LangGraph state machine.
 
     sanitize -> analyze_job -> retrieve -> assess (fan-out, one per candidate)
-             -> rank (grounding check + weighted score) -> synthesize
+             -> rank (grounding check, weighted score, requirement coverage)
+             -> synthesize  ||  plan_search (only when the base falls short)
 
 The flow is deterministic on purpose: the LLM is used where judgement is
 needed (reading the mandate, assessing fit, writing the memo) while
@@ -18,6 +19,7 @@ from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Send
 
 from curator.agent import prompts
+from curator.agent.coverage import needs_search_plan, requirement_coverage
 from curator.agent.grounding import grounding_rate, verify_evidence
 from curator.agent.llm import StructuredLLM
 from curator.config import Settings
@@ -25,7 +27,10 @@ from curator.domain.models import (
     CandidateAssessment,
     JobProfile,
     MatchNarrative,
+    RequirementCoverage,
     ScoredCandidate,
+    ScoreWeights,
+    SearchPlan,
     ShortlistEntry,
 )
 from curator.ingestion.loader import CandidateRepository
@@ -38,13 +43,16 @@ class CurationError(RuntimeError):
 
 class CurationState(TypedDict, total=False):
     job_description: str
+    weights: ScoreWeights
     sanitized_job: str
     redactions: int
     job_profile: JobProfile
     shortlist: list[ShortlistEntry]
     assessments: Annotated[list[tuple[str, CandidateAssessment]], operator.add]
     ranking: list[ScoredCandidate]
+    coverage: list[RequirementCoverage]
     narrative: MatchNarrative
+    search_plan: SearchPlan
     llm_calls: Annotated[int, operator.add]
 
 
@@ -91,11 +99,20 @@ def render_scored(candidate: ScoredCandidate) -> str:
     )
 
 
-def weighted_score(assessment: CandidateAssessment, grounding: float, s: Settings) -> float:
+def default_weights(s: Settings) -> ScoreWeights:
+    return ScoreWeights(
+        hard_skills=s.weight_hard_skills,
+        soft_skills=s.weight_soft_skills,
+        context_fit=s.weight_context_fit,
+    )
+
+
+def weighted_score(assessment: CandidateAssessment, grounding: float, w: ScoreWeights) -> float:
+    """Mirrored in frontend/src/lib/ranking.ts for client-side what-if re-ranking."""
     base = (
-        s.weight_hard_skills * assessment.hard_skills.score
-        + s.weight_soft_skills * assessment.soft_skills.score
-        + s.weight_context_fit * assessment.context_fit.score
+        w.hard_skills * assessment.hard_skills.score
+        + w.soft_skills * assessment.soft_skills.score
+        + w.context_fit * assessment.context_fit.score
     ) * 10
     # Poorly grounded assessments lose up to 25% of their score.
     return round(base * (0.75 + 0.25 * grounding), 1)
@@ -148,6 +165,7 @@ def build_graph(deps: Dependencies) -> CompiledStateGraph[Any, Any, Any, Any]:
         return {"assessments": [(profile.candidate_id, assessment)], "llm_calls": 1}
 
     def rank(state: CurationState) -> dict[str, Any]:
+        weights = state.get("weights") or default_weights(settings)
         retrieval = {e.candidate_id: e.retrieval_score for e in state["shortlist"]}
         scored = []
         for candidate_id, assessment in state["assessments"]:
@@ -165,12 +183,19 @@ def build_graph(deps: Dependencies) -> CompiledStateGraph[Any, Any, Any, Any]:
                     assessment=assessment,
                     evidence=evidence,
                     grounding_rate=grounding,
-                    final_score=weighted_score(assessment, grounding, settings),
+                    final_score=weighted_score(assessment, grounding, weights),
                 )
             )
         # Retrieval score only breaks ties; the assessment drives the ranking.
         scored.sort(key=lambda c: (c.final_score, c.retrieval_score), reverse=True)
-        return {"ranking": scored}
+        coverage = requirement_coverage(state["job_profile"], scored)
+        return {"ranking": scored, "coverage": coverage, "weights": weights}
+
+    def after_rank(state: CurationState) -> list[str]:
+        plan = settings.search_plan_enabled and needs_search_plan(
+            state["ranking"], state["coverage"], settings.search_plan_threshold
+        )
+        return ["synthesize", "plan_search"] if plan else ["synthesize"]
 
     async def synthesize(state: CurationState) -> dict[str, Any]:
         top = state["ranking"][: settings.top_k]
@@ -185,6 +210,26 @@ def build_graph(deps: Dependencies) -> CompiledStateGraph[Any, Any, Any, Any]:
         )
         return {"narrative": narrative, "llm_calls": 1}
 
+    async def plan_search(state: CurationState) -> dict[str, Any]:
+        leader = state["ranking"][0]
+        labels = {"lider": "coberto pelo melhor candidato", "outros": "só em perfis secundários"}
+        coverage = "\n".join(
+            f"- {c.requirement}: {labels.get(c.status, 'sem cobertura na base')}"
+            for c in state["coverage"]
+        )
+        plan = await llm.generate(
+            system=prompts.HOUSE_STYLE,
+            prompt=prompts.SEARCH_PLAN.format(
+                job_profile=render_job_profile(state["job_profile"]),
+                coverage=coverage or "- (sem requisitos essenciais identificados)",
+                leader_score=leader.final_score,
+                leader_gaps="; ".join(leader.assessment.gaps) or "nenhuma registrada",
+            ),
+            schema=SearchPlan,
+            task="search_plan",
+        )
+        return {"search_plan": plan, "llm_calls": 1}
+
     graph = StateGraph(CurationState)
     graph.add_node("sanitize", sanitize)
     graph.add_node("analyze_job", analyze_job)
@@ -192,12 +237,14 @@ def build_graph(deps: Dependencies) -> CompiledStateGraph[Any, Any, Any, Any]:
     graph.add_node("assess", assess)  # type: ignore[arg-type]  # receives a Send payload
     graph.add_node("rank", rank)
     graph.add_node("synthesize", synthesize)
+    graph.add_node("plan_search", plan_search)
 
     graph.add_edge(START, "sanitize")
     graph.add_edge("sanitize", "analyze_job")
     graph.add_edge("analyze_job", "retrieve")
     graph.add_conditional_edges("retrieve", fan_out, ["assess"])
     graph.add_edge("assess", "rank")
-    graph.add_edge("rank", "synthesize")
+    graph.add_conditional_edges("rank", after_rank, ["synthesize", "plan_search"])
     graph.add_edge("synthesize", END)
+    graph.add_edge("plan_search", END)
     return graph.compile()

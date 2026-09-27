@@ -4,9 +4,9 @@ LLM-facing schemas (the ones passed to structured output) carry field
 descriptions because they double as instructions to the model.
 """
 
-from typing import Literal
+from typing import Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 # --- Candidate data ---------------------------------------------------------
 
@@ -85,7 +85,9 @@ class DimensionScore(BaseModel):
 
 
 class Evidence(BaseModel):
-    requirement: str = Field(description="Requisito da vaga ao qual a evidência se refere.")
+    requirement: str = Field(
+        description="Nome do requisito da vaga, copiado exatamente como aparece no mandato."
+    )
     claim: str = Field(description="O que a evidência demonstra sobre o candidato.")
     quote: str = Field(
         description=(
@@ -109,6 +111,59 @@ class CandidateAssessment(BaseModel):
     )
     interview_focus: list[str] = Field(
         description="Até 3 pontos que o sócio deveria aprofundar em entrevista."
+    )
+
+
+# --- Scoring ------------------------------------------------------------------
+
+
+class ScoreWeights(BaseModel):
+    """Relative weight of each dimension in the final score; normalised to sum 1."""
+
+    hard_skills: float = Field(default=0.40, ge=0)
+    soft_skills: float = Field(default=0.30, ge=0)
+    context_fit: float = Field(default=0.30, ge=0)
+
+    @model_validator(mode="after")
+    def _normalise(self) -> Self:
+        total = self.hard_skills + self.soft_skills + self.context_fit
+        if total <= 0:
+            raise ValueError("at least one weight must be positive")
+        self.hard_skills = round(self.hard_skills / total, 4)
+        self.soft_skills = round(self.soft_skills / total, 4)
+        self.context_fit = round(self.context_fit / total, 4)
+        return self
+
+
+# --- Search plan (LLM output) ------------------------------------------------
+
+
+class TargetProfile(BaseModel):
+    archetype: str = Field(
+        description=(
+            "Arquétipo de executivo a buscar, específico (ex: CFO de SaaS B2B pós-Series C)."
+        )
+    )
+    rationale: str = Field(description="Por que esse arquétipo cobre as lacunas do mandato.")
+    trade_off: str = Field(description="O que se tende a perder ao priorizar esse arquétipo.")
+
+
+class SearchPlan(BaseModel):
+    diagnosis: str = Field(
+        description="Por que a base atual não cobre o mandato por completo, em até 60 palavras."
+    )
+    target_profiles: list[TargetProfile] = Field(description="De 2 a 3 arquétipos alternativos.")
+    source_segments: list[str] = Field(
+        description=(
+            "Segmentos e tipos de empresa onde esses perfis costumam estar. Descreva o tipo "
+            "de empresa, sem citar nomes de empresas ou de pessoas."
+        )
+    )
+    boolean_queries: list[str] = Field(
+        description="De 2 a 3 buscas booleanas prontas para LinkedIn Recruiter, com termos PT e EN."
+    )
+    screening_questions: list[str] = Field(
+        description="De 3 a 4 perguntas para qualificar rapidamente um novo nome por telefone."
     )
 
 
@@ -186,6 +241,24 @@ class RankedCandidate(BaseModel):
     profile_text: str
 
 
+class CandidateScores(BaseModel):
+    """Everything needed to re-rank a candidate client-side under different weights."""
+
+    candidate_id: str
+    name: str
+    scores: dict[str, int]
+    grounding_rate: float
+    retrieval_score: float
+    final_score: float
+
+
+class RequirementCoverage(BaseModel):
+    requirement: str
+    kind: Literal["hard", "soft"]
+    status: Literal["lider", "outros", "ninguem"]
+    covered_by: list[str]
+
+
 class RunMetadata(BaseModel):
     run_id: str
     model: str
@@ -204,4 +277,8 @@ class MatchReport(BaseModel):
     next_steps: list[str]
     top_candidates: list[RankedCandidate]
     also_considered: list[dict[str, str | float]]
+    weights: ScoreWeights = Field(default_factory=ScoreWeights)
+    assessed: list[CandidateScores] = Field(default_factory=list)
+    coverage: list[RequirementCoverage] = Field(default_factory=list)
+    search_plan: SearchPlan | None = None
     metadata: RunMetadata

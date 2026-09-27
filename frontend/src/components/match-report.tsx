@@ -1,5 +1,7 @@
-import type { MatchReport } from "@/lib/types";
+import type { MatchReport, ScoreWeights } from "@/lib/types";
 import { CandidateDossier } from "./candidate-dossier";
+import { CoverageMap, SearchPlanView } from "./search-plan";
+import { WeightTuner } from "./weight-tuner";
 
 function Chips({ items, tone }: { items: { name: string; importance: string }[]; tone: string }) {
   return (
@@ -21,7 +23,13 @@ function Chips({ items, tone }: { items: { name: string; importance: string }[];
   );
 }
 
-export function MatchReportView({ report }: { report: MatchReport }) {
+type Props = {
+  report: MatchReport;
+  onRerun: (weights: ScoreWeights) => void;
+  rerunning: boolean;
+};
+
+export function MatchReportView({ report, onRerun, rerunning }: Props) {
   const { job, metadata } = report;
 
   return (
@@ -69,7 +77,23 @@ export function MatchReportView({ report }: { report: MatchReport }) {
             </ol>
           </div>
         )}
+        {report.search_plan && (
+          <a
+            href="#plano-de-busca"
+            className="mt-5 inline-flex items-center gap-2 rounded-md border border-amber/40 bg-amber-wash/60 px-3 py-2 text-[13px] text-ink-soft hover:border-amber"
+          >
+            A base não cobre o mandato por completo. Ver plano de busca ↓
+          </a>
+        )}
       </section>
+
+      <WeightTuner
+        key={metadata.run_id}
+        assessed={report.assessed}
+        reportWeights={report.weights}
+        onRerun={onRerun}
+        rerunning={rerunning}
+      />
 
       {report.top_candidates.map((c, i) => (
         <CandidateDossier key={c.candidate_id} candidate={c} runId={metadata.run_id} index={i + 1} />
@@ -91,6 +115,9 @@ export function MatchReportView({ report }: { report: MatchReport }) {
           </ul>
         </section>
       )}
+
+      <CoverageMap coverage={report.coverage} />
+      {report.search_plan && <SearchPlanView plan={report.search_plan} />}
 
       <footer className="flex flex-wrap gap-x-6 gap-y-1 px-1 font-mono text-[11px] text-muted">
         <span>modelo {metadata.model}</span>

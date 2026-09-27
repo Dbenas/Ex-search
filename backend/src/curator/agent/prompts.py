@@ -84,3 +84,30 @@ Use apenas fatos presentes nas evidências verificadas; não introduza fatos nov
 No `executive_summary`, compare o shortlist e indique onde está a decisão real \
 (o trade-off que o sócio precisa arbitrar). Em `next_steps`, proponha ações verificáveis: \
 o que confirmar em entrevista ou referência e qual resultado mudaria a recomendação."""
+
+SEARCH_PLAN = """\
+A base atual não cobre o mandato por completo. Proponha ao sócio um plano para ampliar o \
+mapeamento.
+
+<mandato>
+{job_profile}
+</mandato>
+
+<cobertura_da_base>
+{coverage}
+</cobertura_da_base>
+
+<melhor_candidato_atual nota_final="{leader_score}">
+Lacunas: {leader_gaps}
+</melhor_candidato_atual>
+
+Diretrizes:
+- Parta das lacunas: o plano deve buscar perfis que cubram exatamente o que falta, sem \
+perder o que o melhor candidato atual já oferece.
+- Arquétipos devem ser específicos (estágio, setor, tipo de experiência), não genéricos \
+como "CFO experiente".
+- Descreva segmentos e tipos de empresa; não cite nomes de empresas nem de pessoas.
+- As buscas booleanas devem usar a sintaxe do LinkedIn Recruiter (AND, OR, NOT, aspas, \
+parênteses) e combinar termos em português e inglês.
+- As perguntas de triagem devem distinguir rapidamente quem de fato viveu o desafio de \
+quem apenas ocupou o cargo."""
