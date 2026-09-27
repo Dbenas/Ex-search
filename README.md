@@ -12,13 +12,13 @@ decide continua sendo o sócio.
 | Vaga | Esperado | Ranking produzido | Evidências confirmadas |
 |---|---|---|---|
 | CTO · startup B2B | Carolina Mendes | **Carolina** (80) › Bruno (31) › Ana (25) | 100% |
-| CFO · captação e M&A | Ana Silva | **Ana** (74) › Carolina (28) › Diego (24) | 100% |
+| CFO · captação e M&A | Ana Silva | **Ana** (71) › Diego (27) › Carolina (25) | 100% |
 
 O caso interessante é o que o sistema **não** faz:
 
-- Na vaga de CFO, Diego também é CFO, mas fica atrás. O parecer aponta que a trajetória dele
-  é de controladoria em indústria pesada, com perfil conservador, o oposto de uma scale-up
-  preparando captação e M&A.
+- Na vaga de CFO, Diego também é CFO, mas fica 44 pontos atrás da Ana. O parecer aponta que a
+  trajetória dele é de controladoria em indústria pesada, com perfil conservador, o oposto de
+  uma scale-up preparando captação e M&A.
 - Na vaga de CTO, Bruno tem cloud e times de 500 pessoas, mas o parecer o descarta pelo estilo
   "apaziguador, de governança e estabilidade" diante de um mandato de construir do zero.
 
@@ -47,6 +47,9 @@ vaga ─▶ remove PII ─▶ lê o mandato ─▶ busca híbrida ─▶ avalia 
 6. **Parecer.** Um memorando comparativo, escrito só com fatos verificados, com recomendação
    por candidato e próximos passos para o sócio.
 
+Cada análise registra tokens e custo estimado: com Claude Opus 5, cerca de 53 s e US$ 0,26
+para 4 candidatos.
+
 Arquitetura e desenho de produção no GCP: [docs/architecture.md](docs/architecture.md).
 
 ## Stack e por quê
@@ -54,6 +57,7 @@ Arquitetura e desenho de produção no GCP: [docs/architecture.md](docs/architec
 | Escolha | Motivo |
 |---|---|
 | **Claude Opus 5** (Anthropic API; Vertex AI em produção) | Saída estruturada nativa com validação Pydantic, e seguimento fiel de instruções de citação literal, que é a base do controle de alucinação. No GCP, o mesmo modelo roda via Vertex AI, dentro do perímetro do projeto e sem uso dos dados para treino. Trocar de provedor é uma variável de ambiente. |
+| **Gemini** como alternativa (`LLM_PROVIDER=gemini`) | Mesmo contrato de saída estruturada, então os dois modelos rodam o mesmo pipeline e podem ser comparados com a mesma avaliação. Em produção no GCP, via Vertex AI. O benchmark depende de um projeto com faturamento (ver [avaliação](docs/avaliacao.md#comparação-entre-modelos)). |
 | **LangGraph** | O fluxo é um grafo explícito, com estado tipado e fan-out paralelo (`Send`) para avaliar candidatos. Cada nó é testável isoladamente e o streaming de etapas sai de graça. Um agente "livre" com ferramentas seria menos previsível para um processo que precisa ser auditável. |
 | **SDK oficial da Anthropic** nas chamadas | Acesso direto a `messages.parse`, `effort` e fallback de recusa, sem camada de abstração entre o grafo e o modelo. |
 | **Embeddings locais (fastembed, ONNX)** | Os CVs não saem da infraestrutura para vetorizar, não há custo por token e a imagem não depende de GPU. |
@@ -99,13 +103,13 @@ npm run dev                   # http://localhost:3000
 
 ```bash
 uv run curator match minha-vaga.txt     # roda o agente para uma vaga em arquivo
-uv run curator evaluate                 # vagas de teste + juiz; grava reports/evaluation.json
+uv run curator evaluate                 # vagas de teste + juiz; grava reports/evaluation-<modelo>.json
 ```
 
 **Qualidade**
 
 ```bash
-uv run pytest                 # 24 testes; o LLM é substituído por um fake determinístico
+uv run pytest                 # 28 testes; o LLM é substituído por um fake determinístico
 uv run ruff check . && uv run mypy src
 ```
 

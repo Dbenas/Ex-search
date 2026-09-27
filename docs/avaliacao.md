@@ -1,8 +1,8 @@
 # Avaliação nas vagas de teste
 
 Gerada por `uv run curator evaluate` com `claude-opus-5` (effort `medium`). O relatório
-completo, com todos os pareceres, está em `backend/reports/evaluation.json` e na página
-**Avaliação do modelo** da interface.
+completo, com todos os pareceres, está em `backend/reports/evaluation-claude-opus-5.json` e
+na página **Avaliação do modelo** da interface.
 
 ## Resumo
 
@@ -11,12 +11,16 @@ completo, com todos os pareceres, está em `backend/reports/evaluation.json` e n
 | Candidato esperado em 1º (hit@1) | 2/2 |
 | MRR | 1,00 |
 | Evidências citadas encontradas no CV | 100% |
-| Juiz: tom executivo | 4,0 / 5 |
+| Juiz: tom executivo | 4,5 / 5 |
 | Juiz: utilidade para a decisão | 3,5 / 5 |
 | Juiz: fidelidade aos currículos | 4,0 / 5 |
+| Tempo por análise (4 candidatos, 6 chamadas) | 53 s |
+| Tokens por análise (entrada / saída) | 17,3 mil / 6,8 mil |
+| Custo por análise, preço de tabela | US$ 0,26 |
 
-Com dois casos, as notas do juiz variam cerca de 0,5 ponto entre execuções. O ranking e a
-taxa de evidências ficaram estáveis em todas as rodadas.
+Com dois casos, as notas do juiz variam cerca de 0,5 ponto entre execuções. O 1º lugar e a
+taxa de evidências ficaram estáveis em todas as rodadas; as posições de baixo, com notas
+próximas entre si, às vezes trocam.
 
 ## Vaga 1 · CTO
 
@@ -44,9 +48,9 @@ zero, não *arquitetura*, e o parecer registra essa distinção.
 
 | # | Candidato | Nota | Hard | Soft | Contexto | Recomendação |
 |---|---|---|---|---|---|---|
-| 1 | Ana Silva | 74 | 8 | 6 | 8 | avançar com ressalvas |
-| 2 | Carolina Mendes | 28 | 1 | 5 | 3 | não priorizar |
-| 3 | Diego Souza | 24 | 3 | 2 | 2 | não priorizar |
+| 1 | Ana Silva | 71 | 8 | 5 | 8 | avançar com ressalvas |
+| 2 | Diego Souza | 27 | 3 | 3 | 2 | não priorizar |
+| 3 | Carolina Mendes | 25 | 1 | 4 | 3 | não priorizar |
 | – | Bruno Costa | 16 | | | | também avaliado |
 
 > A decisão real do sócio não é comparativa, e sim de suficiência: avançar com um shortlist
@@ -55,8 +59,23 @@ zero, não *arquitetura*, e o parecer registra essa distinção.
 
 **Leitura.** Esta vaga tem uma armadilha: o título fala em "Reestruturação", o que favorece
 lexicalmente o Diego (CFO, compliance, auditoria). O modelo leu o conteúdo: captação
-institucional, M&A e VC. O Diego ficou atrás até da Carolina, que tem soft skills mais
-próximas de uma scale-up, embora nenhum dos dois seja recomendado.
+institucional, M&A e VC. O Diego, mesmo sendo CFO, fica 44 pontos atrás da Ana, com
+contexto 2/10: governança de indústria pesada não é o desafio de uma scale-up pré-M&A. Em
+rodadas anteriores ele chegou a ficar atrás da Carolina, que nem é de finanças; entre
+perfis igualmente desalinhados, a ordem varia.
+
+## Comparação entre modelos
+
+O pipeline aceita Claude ou Gemini (`LLM_PROVIDER=gemini`) com os mesmos prompts, busca e
+verificação, e `curator evaluate --provider gemini` gera um relatório comparável, sempre com
+o mesmo juiz. A página de avaliação exibe os modelos lado a lado.
+
+O benchmark com Gemini ainda não foi executado. O plano gratuito da API não inclui os
+modelos Pro e limita o Flash a 5 requisições por minuto, com erros frequentes de sobrecarga
+(503). Uma análise faz 6 chamadas. Além disso, no plano gratuito o Google pode usar o
+conteúdo enviado para melhorar seus produtos, o que não seria aceitável com dados reais. A
+comparação justa (Claude Opus 5 × Gemini 3.1 Pro) requer um projeto com faturamento ou o
+Vertex AI.
 
 ## O que o juiz criticou e o que mudou
 

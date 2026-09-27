@@ -22,16 +22,22 @@ class Settings(BaseSettings):
     llm_effort: Literal["low", "medium", "high", "xhigh", "max"] = "medium"
     llm_max_tokens: int = 16_000
     llm_timeout_s: float = 120.0
+    llm_max_concurrency: int = Field(default=4, ge=1, le=16)
     # Server-side refusal fallback is only available on the first-party API.
     llm_refusal_fallback: bool = True
     gcp_project_id: str | None = None
     gcp_region: str = "global"
     gemini_api_key: SecretStr | None = None
-    gemini_model: str = "gemini-pro-latest"
+    gemini_model: str = "gemini-3.1-pro-preview"
     gemini_use_vertex: bool = False
     # List prices in USD per million tokens (input, output), for cost estimates.
+    # Gemini Flash is at promotional pricing until 2026-12-31 (doubles afterwards).
     model_prices: dict[str, tuple[float, float]] = Field(
-        default_factory=lambda: {"claude-opus-5": (5.0, 25.0)}
+        default_factory=lambda: {
+            "claude-opus-5": (5.0, 25.0),
+            "gemini-3.1-pro-preview": (2.0, 12.0),
+            "gemini-3.8-flash": (0.75, 3.75),
+        }
     )
 
     # Retrieval

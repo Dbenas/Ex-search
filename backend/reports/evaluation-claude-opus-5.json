@@ -1,12 +1,17 @@
 {
-  "generated_at": "2026-09-25T20:59:35+00:00",
+  "generated_at": "2026-09-27T17:50:51+00:00",
   "model": "claude-opus-5",
+  "judge_model": "claude-opus-5",
   "summary": {
     "cases": 2,
+    "avg_elapsed_s": 53.2,
+    "avg_input_tokens": 17318,
+    "avg_output_tokens": 6846,
+    "avg_cost_usd": 0.2577,
     "hit_at_1": 1,
     "mrr": 1.0,
     "grounding_rate": 1.0,
-    "judge_executive_tone": 4,
+    "judge_executive_tone": 4.5,
     "judge_decision_usefulness": 3.5,
     "judge_factual_consistency": 4
   },
@@ -26,101 +31,97 @@
       "grounding_rate": 1.0,
       "judge": {
         "executive_tone": 4,
-        "decision_usefulness": 3,
+        "decision_usefulness": 4,
         "factual_consistency": 4,
-        "critique": "O parecer é bem escrito e hierarquiza corretamente os candidatos, mas falha no que mais importa ao sócio: aponta a decisão real (sanar lacunas de Carolina vs. ampliar a busca) e não a resolve — faltam perguntas de validação específicas para a entrevista, um roteiro de referências e uma recomendação explícita sobre reabrir o mapeamento com prazo/perfil-alvo; além disso, atribui a Carolina 'startup de logística' sem sinalizar que a ausência de contexto B2B/SaaS é inferida (o CV é silente, não negativo) e trata escores numéricos (80/31/25) como dados sem explicitar a metodologia."
+        "critique": "O parecer é bem estruturado e fiel aos currículos, mas falha em transformar a boa leitura do trade-off em ação: não propõe perguntas/provas concretas de verificação para as lacunas de Carolina (greenfield, modelos em produção, custo de infra, board), nem define critério de decisão entre avançar com ela ou reabrir o mapeamento — além de pequenos excessos interpretativos (inferir 'interlocução com board' e 'adaptabilidade' de Ana a partir de Series B/C e perfil 'pragmático') e scores numéricos sem metodologia explicitada."
       },
       "report": {
         "job": {
           "role_title": "Chief Technology Officer (CTO)",
-          "mandate": "Construir do zero a arquitetura tecnológica e o time de engenharia de uma startup B2B em rápido crescimento, com IA e dados como eixo central do produto.",
-          "company_context": "Startup B2B em estágio de rápido crescimento, ambiente dinâmico e de alta mudança, com stack e time técnico ainda em construção. O texto não detalha porte, faturamento, rodada de captação ou estrutura atual.",
+          "mandate": "Construir a arquitetura tecnológica e o time de engenharia de uma startup B2B em rápido crescimento, com IA e dados no centro da estratégia de produto.",
+          "company_context": "Startup B2B em rápido crescimento, com ambiente dinâmico e estrutura técnica ainda em formação. O texto não detalha porte, estágio de captação ou composição atual do time.",
           "hard_requirements": [
             {
-              "name": "Liderança técnica sênior em nível de CTO ou equivalente",
+              "name": "Liderança técnica sênior em nível de CTO",
               "importance": "essencial"
             },
             {
-              "name": "Domínio de inteligência artificial e engenharia/arquitetura de dados",
+              "name": "Viés forte em IA e dados aplicados a produto",
               "importance": "essencial"
             },
             {
-              "name": "Desenho e implementação de arquitetura escalável a partir do zero",
+              "name": "Atuação hands-on em código e decisões de arquitetura",
               "importance": "essencial"
             },
             {
-              "name": "Atuação hands-on em código e decisões técnicas do dia a dia",
+              "name": "Desenho e construção de arquitetura escalável do zero",
               "importance": "essencial"
             },
             {
-              "name": "Formação e escala de times de engenharia",
+              "name": "Escala de time técnico: contratação, estruturação e retenção",
               "importance": "essencial"
             },
             {
-              "name": "Experiência prévia em startups B2B ou SaaS",
+              "name": "Experiência prévia em ambiente de startup B2B",
               "importance": "desejavel"
             },
             {
-              "name": "Vivência em ambiente de hipercrescimento com restrição de recursos",
+              "name": "Vivência em contexto SaaS com clientes corporativos",
               "importance": "desejavel"
             },
             {
-              "name": "Colocação de modelos de IA/ML em produção (MLOps)",
+              "name": "Definição de stack e infraestrutura de dados (pipelines, cloud)",
               "importance": "desejavel"
             },
             {
-              "name": "Cloud, microsserviços e gestão de custos de infraestrutura",
+              "name": "Colocação de modelos de IA em produção em escala",
               "importance": "desejavel"
             },
             {
-              "name": "Interlocução com investidores e due diligence técnica",
+              "name": "Interlocução com investidores e board em temas de tecnologia",
               "importance": "desejavel"
             },
             {
-              "name": "Segurança da informação e compliance de dados (LGPD) em contexto B2B",
-              "importance": "desejavel"
-            },
-            {
-              "name": "Parceria com produto e áreas comerciais em ciclo de venda B2B",
+              "name": "Gestão de custo de infraestrutura em ciclo de crescimento acelerado",
               "importance": "desejavel"
             }
           ],
           "soft_requirements": [
             {
-              "name": "Alta adaptabilidade e tolerância a ambiguidade",
+              "name": "Alta adaptabilidade em ambiente dinâmico",
               "importance": "essencial"
             },
             {
-              "name": "Orientação à inovação e experimentação",
+              "name": "Orientação à inovação",
               "importance": "essencial"
             },
             {
-              "name": "Pragmatismo na priorização e velocidade de execução",
-              "importance": "essencial"
-            },
-            {
-              "name": "Capacidade de atrair e reter talento técnico",
+              "name": "Tolerância a ambiguidade e decisão com informação incompleta",
               "importance": "desejavel"
             },
             {
-              "name": "Comunicação executiva com sócios, board e clientes",
+              "name": "Capacidade de atrair talento técnico sem estrutura consolidada",
+              "importance": "desejavel"
+            },
+            {
+              "name": "Pragmatismo na priorização entre velocidade e robustez técnica",
               "importance": "desejavel"
             }
           ],
           "search_queries": [
             "CTO de startup B2B que construiu arquitetura e time de engenharia do zero",
-            "Líder de tecnologia hands-on com especialização em inteligência artificial e dados",
-            "Head de engenharia que escalou plataforma SaaS em ambiente de rápido crescimento",
-            "Executivo de tecnologia com experiência em machine learning em produção e arquitetura em nuvem",
-            "VP de Engenharia que estruturou área técnica em startup early stage"
+            "Líder técnico hands-on com especialização em inteligência artificial e engenharia de dados",
+            "VP de Engenharia que escalou time técnico em empresa SaaS de alto crescimento",
+            "Executivo de tecnologia responsável por modelos de IA em produção e plataforma de dados",
+            "Head de tecnologia em ambiente de startup com forte atuação técnica e gestão de produto"
           ]
         },
-        "executive_summary": "O shortlist é assimétrico: apenas Carolina Mendes responde ao núcleo do mandato — CTO de startup, IA e dados, hands-on, times formados do zero. Bruno Costa traz senioridade corporativa de TI, mas orientação a governança e estabilidade oposta ao contexto. Ana Silva é trajetória financeira, sem liderança técnica. A decisão real não é comparativa: é arbitrar se as lacunas de Carolina Mendes (arquitetura do zero, MLOps, cloud, B2B/SaaS) são sanáveis em entrevista ou exigem ampliação da busca.",
+        "executive_summary": "O shortlist é assimétrico: apenas Carolina Mendes responde ao núcleo do mandato — cadeira de CTO, viés em IA e dados aplicados a produto, prática hands-on e formação de times do zero. Bruno Costa traz escala corporativa e cloud, mas em chave de governança e legado; Ana Silva é trajetória financeira. A decisão real não é comparativa: é arbitrar se as lacunas de Carolina Mendes (arquitetura greenfield, B2B/SaaS, board, custo de infraestrutura) são verificáveis em entrevista ou se o mapeamento deve ser ampliado.",
         "next_steps": [
-          "Aprofundar com Carolina Mendes, em entrevista técnica, o desenho de arquitetura desde a fundação, uso de cloud/microsserviços, gestão de custos de infraestrutura e colocação de modelos em produção (MLOps); evidência consistente sustenta avanço direto.",
-          "Checar referências sobre o ciclo comercial do negócio de logística: se houve venda e operação B2B, a lacuna de contexto se fecha; se for B2C ou operação própria, o risco de fit aumenta.",
-          "Validar com Carolina Mendes exposição a board, investidores, due diligence técnica e compliance/LGPD — dimensão não evidenciada e relevante para rodadas futuras.",
-          "Manter mapeamento ativo em paralelo por 3 a 4 semanas: se duas das lacunas essenciais de Carolina Mendes não forem comprovadas, ampliar a busca em vez de avançar com os demais nomes do shortlist."
+          "Aprofundar com Carolina Mendes, em entrevista técnica com sócio e referência de fundador, o desenho de arquitetura do zero, definição de stack e pipelines, e colocação de modelos de IA em produção em escala; evidência consistente sustenta avanço imediato.",
+          "Testar com Carolina Mendes a transposição do domínio logística para B2B/SaaS com clientes corporativos e a interlocução com board e investidores, incluindo gestão de custo de infraestrutura em ciclo de crescimento.",
+          "Definir o critério de corte: se Carolina Mendes não comprovar arquitetura escalável construída do zero, reabrir o mapeamento com foco em CTOs de SaaS B2B com IA em produção, mantendo o processo em curso.",
+          "Encerrar Ana Silva e Bruno Costa para esta posição e registrar Bruno Costa como referência para mandatos de tecnologia corporativa."
         ],
         "top_candidates": [
           {
@@ -129,29 +130,29 @@
             "name": "Carolina Mendes",
             "current_role": "CTO, startup de logística",
             "final_score": 80.0,
-            "retrieval_score": 0.8503,
+            "retrieval_score": 0.9274,
             "grounding_rate": 1.0,
             "scores": {
               "hard_skills": {
                 "score": 8,
-                "rationale": "O perfil cobre os eixos essenciais: cargo de CTO, foco em IA e dados, atuação hands-on em Python e formação de times do zero. Faltam evidências de arquitetura escalável construída do zero, MLOps, cloud/microsserviços e vivência B2B/SaaS."
+                "rationale": "O perfil cobre os cinco requisitos essenciais: senioridade em nível de CTO, viés forte em IA e dados aplicados a produto, atuação hands-on em Python e escala de times do zero. Faltam evidências sobre stack e infraestrutura de dados, modelos de IA em produção em escala, custo de infraestrutura e interlocução com board."
               },
               "soft_skills": {
                 "score": 9,
-                "rationale": "Adaptabilidade, inovação e tolerância a ambientes de pouca estrutura estão declaradas de forma direta e coerentes com o mandato. Comunicação executiva com board e clientes não aparece."
+                "rationale": "O texto afirma explicitamente perfil inovador, alta adaptabilidade e familiaridade com ambientes de alta pressão e pouca estrutura, exatamente os traços essenciais do mandato. Pragmatismo na priorização e atração de talento sem estrutura consolidada não estão declarados, embora sejam coerentes com a escala de times do zero."
               },
               "context_fit": {
                 "score": 7,
-                "rationale": "A trajetória se deu em startup de estágio inicial, sob pressão e sem estrutura, o que espelha o contexto do mandato; a lacuna é o domínio B2B/SaaS, já que logística com otimização de rotas não é explicitado como venda B2B."
+                "rationale": "A trajetória se dá em startup com estrutura escassa e forte componente de IA e dados, estágio de empresa próximo ao do mandato. A ressalva é o domínio logística e a ausência de menção a contexto B2B ou SaaS com clientes corporativos, o que deixa o encaixe de modelo de negócio não comprovado."
               }
             },
-            "headline": "Único encaixe real do shortlist no núcleo do mandato, com lacunas de arquitetura e contexto B2B a verificar.",
-            "analysis": "A trajetória de Carolina Mendes cobre os eixos essenciais: posição de CTO em startup, IA e dados como núcleo declarado da atuação, codificação ativa em Python e construção e escala de times ágeis do zero. O comportamento acompanha o mandato — adaptabilidade, perfil orientado à inovação e operação em ambiente de alta pressão e pouca estrutura, que espelha o estágio da companhia. É o que diferencia esse nome dos demais: os outros dois não registram liderança técnica de produto. As ressalvas são objetivas e devem ser endereçadas antes da decisão: não há evidência de arquitetura escalável desenhada do zero, de MLOps, de cloud e microsserviços com gestão de custos, nem de vivência B2B/SaaS. Interlocução com board, investidores e compliance/LGPD também não aparece.",
+            "headline": "Único perfil do shortlist que cobre os cinco requisitos essenciais do mandato, com ressalva de modelo de negócio.",
+            "analysis": "A trajetória de Carolina Mendes responde ao eixo central do mandato: cadeira de CTO em startup, foco declarado em IA, dados e otimização aplicada a produto, prática direta de programação em Python e escala de times ágeis do zero, apoiada em formação em Matemática. No plano comportamental, o perfil declara inovação, alta adaptabilidade e vivência em ambientes de alta pressão e pouca estrutura — exatamente o contexto descrito. O diferencial frente aos demais é a combinação de senioridade executiva com mão na massa técnica. As ressalvas são de natureza verificável, não eliminatória: o texto atesta escala de time, mas não de arquitetura construída do zero; não há menção a stack e pipelines, modelos em produção em escala, custo de infraestrutura, interlocução com board nem a contexto B2B ou SaaS corporativo, sendo o domínio logística.",
             "recommendation": "avancar_com_ressalvas",
             "evidence": [
               {
-                "requirement": "Liderança técnica sênior em nível de CTO ou equivalente",
-                "claim": "Ocupa a posição de CTO em ambiente de startup.",
+                "requirement": "Liderança técnica sênior em nível de CTO",
+                "claim": "Ocupa a cadeira de CTO em ambiente de startup.",
                 "quote": "CTO em startup de logística",
                 "verified": true,
                 "match_score": 100.0,
@@ -159,8 +160,8 @@
                 "end": 44
               },
               {
-                "requirement": "Domínio de inteligência artificial e engenharia/arquitetura de dados",
-                "claim": "IA e dados são o núcleo declarado da atuação técnica.",
+                "requirement": "Viés forte em IA e dados aplicados a produto",
+                "claim": "Concentração declarada em IA e dados aplicados a um problema de produto (otimização de rotas).",
                 "quote": "Foco absoluto em Inteligência Artificial, dados e otimização de rotas",
                 "verified": true,
                 "match_score": 100.0,
@@ -168,8 +169,8 @@
                 "end": 115
               },
               {
-                "requirement": "Atuação hands-on em código e decisões técnicas do dia a dia",
-                "claim": "Mantém codificação ativa.",
+                "requirement": "Atuação hands-on em código",
+                "claim": "Mantém prática direta de programação.",
                 "quote": "Hands-on, programa em Python",
                 "verified": true,
                 "match_score": 100.0,
@@ -177,8 +178,8 @@
                 "end": 145
               },
               {
-                "requirement": "Formação e escala de times de engenharia",
-                "claim": "Construiu e escalou times a partir do zero.",
+                "requirement": "Escala de time técnico: contratação, estruturação e retenção",
+                "claim": "Estruturou times técnicos partindo do zero.",
                 "quote": "escala times ágeis do zero",
                 "verified": true,
                 "match_score": 100.0,
@@ -186,44 +187,35 @@
                 "end": 174
               },
               {
-                "requirement": "Alta adaptabilidade e tolerância a ambiguidade",
-                "claim": "Adaptabilidade e operação em ambiente de baixa estrutura declaradas.",
-                "quote": "alta adaptabilidade, acostumada a ambientes de alta pressão e pouca estrutura",
-                "verified": true,
-                "match_score": 100.0,
-                "start": 193,
-                "end": 270
-              },
-              {
-                "requirement": "Orientação à inovação e experimentação",
-                "claim": "Perfil orientado à inovação.",
-                "quote": "Perfil inovador",
+                "requirement": "Alta adaptabilidade em ambiente dinâmico e orientação à inovação",
+                "claim": "Traços comportamentais declarados alinhados ao ambiente em formação do mandato.",
+                "quote": "Perfil inovador, alta adaptabilidade, acostumada a ambientes de alta pressão e pouca estrutura",
                 "verified": true,
                 "match_score": 100.0,
                 "start": 176,
-                "end": 191
+                "end": 270
               },
               {
-                "requirement": "Vivência em ambiente de hipercrescimento com restrição de recursos",
-                "claim": "Experiência em contexto de pressão e escassez de estrutura.",
-                "quote": "ambientes de alta pressão e pouca estrutura",
+                "requirement": "Base técnica para IA e dados",
+                "claim": "Formação quantitativa que sustenta o viés analítico.",
+                "quote": "Matemática (UFRJ)",
                 "verified": true,
                 "match_score": 100.0,
-                "start": 227,
-                "end": 270
+                "start": 272,
+                "end": 289
               }
             ],
             "gaps": [
-              "Experiência prévia em startups B2B ou SaaS",
-              "Desenho e implementação de arquitetura escalável a partir do zero",
-              "Colocação de modelos de IA/ML em produção (MLOps)",
-              "Cloud, microsserviços e gestão de custos de infraestrutura",
-              "Interlocução com investidores, due diligence técnica e compliance/LGPD"
+              "Experiência em startup B2B e em SaaS com clientes corporativos não mencionada",
+              "Desenho de arquitetura escalável do zero não explicitado (o texto atesta escala de time, não de arquitetura)",
+              "Definição de stack e infraestrutura de dados (pipelines, cloud) sem evidência",
+              "Colocação de modelos de IA em produção em escala não declarada",
+              "Interlocução com investidores e board e gestão de custo de infraestrutura ausentes"
             ],
             "interview_focus": [
-              "Detalhar a arquitetura construída na startup de logística: decisões de escalabilidade, cloud, microsserviços e custo de infraestrutura.",
-              "Verificar se os modelos de IA de otimização de rotas chegaram a produção e como foi o ciclo de MLOps e monitoramento.",
-              "Aferir exposição a ciclo de venda B2B, parceria com produto/comercial e interlocução com board e investidores."
+              "Natureza do negócio da startup de logística: B2B ou B2C, perfil de clientes e modelo SaaS, para aferir transferência de contexto comercial",
+              "Profundidade das decisões de arquitetura e infraestrutura de dados: o que foi construído do zero, escolhas de cloud, pipelines e custo em ciclo de crescimento",
+              "Maturidade dos modelos de IA: se chegaram a produção em escala e quais métricas de negócio foram afetadas; e qual a exposição a board e investidores"
             ],
             "profile_text": "12 anos em tech. CTO em startup de logística. Foco absoluto em Inteligência Artificial, dados e otimização de rotas. Hands-on, programa em Python e escala times ágeis do zero. Perfil inovador, alta adaptabilidade, acostumada a ambientes de alta pressão e pouca estrutura. Matemática (UFRJ)."
           },
@@ -233,38 +225,38 @@
             "name": "Bruno Costa",
             "current_role": "CIO, banco de varejo",
             "final_score": 31.0,
-            "retrieval_score": 0.6269,
+            "retrieval_score": 0.6258,
             "grounding_rate": 1.0,
             "scores": {
               "hard_skills": {
                 "score": 4,
-                "rationale": "Há senioridade tecnológica comprovada (CIO, migração de legado para GCP/AWS), mas o perfil não registra IA, engenharia de dados, MLOps, atuação hands-on nem construção de arquitetura do zero — apenas modernização de ambiente existente."
+                "rationale": "A trajetória comprova liderança tecnológica sênior, cloud em larga escala e gestão de estruturas complexas, mas não há qualquer evidência de IA e dados aplicados a produto, atuação hands-on em código ou construção de arquitetura do zero. O perfil é de TI corporativa e migração de legado, não de engenharia de produto."
               },
               "soft_skills": {
                 "score": 3,
-                "rationale": "O perfil se define como apaziguador, com forte cultura de governança e estabilidade, orientação oposta ao pragmatismo veloz, à experimentação e à tolerância a ambiguidade exigidos. Não há evidência de atração de talento técnico nem de comunicação com board ou investidores."
+                "rationale": "O perfil é descrito como apaziguador, com forte cultura de governança e estabilidade, atributos em tensão direta com adaptabilidade em ambiente dinâmico, orientação à inovação e tolerância a ambiguidade. Não há indicação de pragmatismo entre velocidade e robustez nem de atração de talento sem estrutura consolidada."
               },
               "context_fit": {
                 "score": 2,
-                "rationale": "Trajetória em banco de varejo tradicional, com times de +500 pessoas e ênfase em governança, é o oposto do contexto de startup B2B enxuta, em hipercrescimento e com time em construção. Não há evidência de startup, SaaS ou restrição de recursos."
+                "rationale": "A atuação se dá em banco de varejo tradicional, com equipes de mais de 500 pessoas e ambiente regulado, o oposto do contexto de startup B2B em formação. Não há evidência de vivência em SaaS, estágio inicial ou interlocução com investidores."
               }
             },
-            "headline": "Senioridade de TI corporativa com orientação cultural oposta ao mandato de startup.",
-            "analysis": "Bruno Costa traz senioridade executiva comprovada — CIO em banco de varejo, migração completa de legado para GCP/AWS e gestão de equipes de mais de 500 pessoas. O escopo, porém, é de TI interna e de modernização de ambiente existente, não de construção de produto: não há registro de IA, engenharia de dados, MLOps, atuação hands-on ou arquitetura erguida do zero. O ponto mais crítico é comportamental. O estilo declarado privilegia consenso, governança e estabilidade, em tensão direta com o pragmatismo veloz, a experimentação e a tolerância a ambiguidade que o mandato exige. Gerir estruturas já consolidadas difere materialmente de formar time em startup com restrição de recursos. Sem evidência de startup, SaaS ou interlocução com investidores, não recomendamos priorizar.",
+            "headline": "Liderança tecnológica de grande porte em chave corporativa, desalinhada do desafio de engenharia de produto em estágio inicial.",
+            "analysis": "Bruno Costa reúne duas décadas em TI e transformação digital, cadeira de CIO em banco de varejo, migração completa de legado para GCP e AWS e gestão de equipes acima de 500 pessoas. São ativos relevantes em infraestrutura e organização de estruturas técnicas, mas construídos em ambiente regulado, com time consolidado e lógica de modernização, não de construção greenfield. Não há evidência de IA e dados aplicados a produto, de atuação hands-on em código ou de arquitetura desenhada do zero — três essenciais do mandato. O estilo declarado, apaziguador e centrado em governança e estabilidade, tensiona diretamente os requisitos de adaptabilidade, inovação e decisão sob ambiguidade. Ausentes também vivência em startup B2B, SaaS corporativo e interlocução com investidores.",
             "recommendation": "nao_priorizar",
             "evidence": [
               {
-                "requirement": "Liderança técnica sênior em nível de CTO ou equivalente",
-                "claim": "Ocupa posição executiva de tecnologia, ainda que em corporação tradicional e com escopo de CIO (TI interna), não de CTO de produto.",
-                "quote": "Atual CIO em banco de varejo tradicional.",
+                "requirement": "Liderança técnica sênior em nível de CTO",
+                "claim": "Ocupa posição executiva máxima de tecnologia, ainda que em perfil de CIO corporativo, com duas décadas de trajetória na área.",
+                "quote": "20 anos de experiência em TI e Transformação Digital. Atual CIO em banco de varejo tradicional.",
                 "verified": true,
                 "match_score": 100.0,
-                "start": 54,
+                "start": 0,
                 "end": 94
               },
               {
-                "requirement": "Cloud, microsserviços e gestão de custos de infraestrutura",
-                "claim": "Domínio comprovado de cloud pública em projeto de migração de larga escala; não há menção a microsserviços ou gestão de custos de infraestrutura.",
+                "requirement": "Definição de stack e infraestrutura de dados (pipelines, cloud)",
+                "claim": "Domina decisões de infraestrutura em nuvem em ambiente multi-cloud, embora no contexto de modernização de legado e não de construção greenfield.",
                 "quote": "Liderou a migração completa de sistemas legados para Cloud (GCP/AWS)",
                 "verified": true,
                 "match_score": 100.0,
@@ -272,8 +264,8 @@
                 "end": 164
               },
               {
-                "requirement": "Formação e escala de times de engenharia",
-                "claim": "Gestão de estruturas técnicas de grande porte já consolidadas, o que difere de formar time do zero em startup.",
+                "requirement": "Escala de time técnico: contratação, estruturação e retenção",
+                "claim": "Gere estruturas técnicas de grande porte, o que indica capacidade de organização de times, embora em contexto de time já consolidado e não de formação inicial.",
                 "quote": "gerindo equipes de +500 pessoas",
                 "verified": true,
                 "match_score": 100.0,
@@ -281,8 +273,8 @@
                 "end": 196
               },
               {
-                "requirement": "Alta adaptabilidade e tolerância a ambiguidade / pragmatismo e velocidade",
-                "claim": "O estilo declarado privilegia consenso, controle e estabilidade, em tensão direta com o comportamento demandado pelo mandato.",
+                "requirement": "Alta adaptabilidade em ambiente dinâmico e orientação à inovação",
+                "claim": "O estilo declarado privilegia estabilidade e governança, sinalizando desalinhamento com o comportamento exigido pelo mandato.",
                 "quote": "Perfil apaziguador, forte cultura de governança e estabilidade.",
                 "verified": true,
                 "match_score": 100.0,
@@ -291,16 +283,16 @@
               }
             ],
             "gaps": [
-              "Domínio de inteligência artificial e engenharia/arquitetura de dados",
-              "Desenho e implementação de arquitetura escalável a partir do zero",
-              "Atuação hands-on em código e decisões técnicas do dia a dia",
-              "Experiência prévia em startups B2B ou SaaS e em ambiente de hipercrescimento com restrição de recursos",
-              "Colocação de modelos de IA/ML em produção (MLOps)"
+              "Viés em IA e dados aplicados a produto; nenhuma menção a modelos, dados ou produto",
+              "Atuação hands-on em código e decisões de arquitetura",
+              "Desenho e construção de arquitetura escalável do zero (trajetória é de migração de legado)",
+              "Experiência em startup B2B e em contexto SaaS com clientes corporativos",
+              "Interlocução com investidores e board em temas de tecnologia"
             ],
             "interview_focus": [
-              "Grau de proximidade atual com código e decisões de arquitetura: o escopo de CIO com +500 pessoas sugere gestão por delegação; validar se há apetite e capacidade de retomar atuação hands-on.",
-              "Exposição real a IA e dados — se a agenda de dados/analytics do banco esteve sob sua responsabilidade e em que profundidade técnica.",
-              "Motivação e adaptabilidade para transitar de ambiente regulado e estável para startup ambígua e sem estrutura; testar tolerância a decisões com informação incompleta."
+              "Testar profundidade técnica atual: até que ponto Bruno Costa mantém proximidade com código e decisões de arquitetura, ou atua apenas em camada de governança e fornecedores.",
+              "Explorar se a migração para GCP/AWS envolveu desenho de plataforma de dados e casos de uso de IA, ou se foi essencialmente modernização de infraestrutura.",
+              "Avaliar apetite e histórico de atuação fora de estrutura consolidada: como decidiria com informação incompleta e com time em formação, dado o perfil declarado de governança e estabilidade."
             ],
             "profile_text": "20 anos de experiência em TI e Transformação Digital. Atual CIO em banco de varejo tradicional. Liderou a migração completa de sistemas legados para Cloud (GCP/AWS) gerindo equipes de +500 pessoas. Perfil apaziguador, forte cultura de governança e estabilidade. Ciência da Computação (UNICAMP)."
           },
@@ -310,38 +302,38 @@
             "name": "Ana Silva",
             "current_role": "Ex-CFO, fintech unicórnio",
             "final_score": 25.0,
-            "retrieval_score": 0.9183,
+            "retrieval_score": 0.8423,
             "grounding_rate": 1.0,
             "scores": {
               "hard_skills": {
                 "score": 1,
-                "rationale": "A trajetória é financeira (CFO, M&A, captação), sem qualquer evidência de liderança técnica, IA, arquitetura de dados ou formação de times de engenharia. A graduação em Engenharia pela Poli-USP não sustenta domínio técnico atual."
+                "rationale": "A trajetória é financeira (CFO, M&A, captação), sem qualquer evidência de liderança técnica, arquitetura, IA/dados ou atuação hands-on em código. A formação em Engenharia não supre requisitos essenciais de um mandato de CTO."
               },
               "soft_skills": {
                 "score": 4,
-                "rationale": "Há evidência explícita de pragmatismo e orientação a resultados rápidos, alinhada ao requisito de priorização e velocidade. Não há indício de orientação à inovação técnica, tolerância a ambiguidade em stack em construção ou atração de talento de engenharia."
+                "rationale": "Há evidência de pragmatismo e de atuação em fintech de alto crescimento, o que sugere adaptabilidade; não há evidência de orientação à inovação tecnológica nem de atração de talento técnico."
               },
               "context_fit": {
                 "score": 3,
-                "rationale": "A vivência em fintech unicórnio e rodadas Series B/C indica familiaridade com crescimento acelerado e interlocução com investidores, mas o contexto é de finanças corporativas, não de construção de produto e engenharia do zero. O mandato exige um operador técnico hands-on, papel oposto ao histórico."
+                "rationale": "Vivência em fintech unicórnio e em ciclos de captação Series B/C aproxima do contexto de startup em crescimento acelerado, mas o tipo de desafio (função financeira) é distinto do mandato de construir engenharia e arquitetura do zero."
               }
             },
-            "headline": "Perfil financeiro de alto nível, sem aderência ao escopo técnico da posição.",
-            "analysis": "A trajetória de Ana Silva é financeira: CFO de fintech unicórnio, M&A, reestruturação e captação em Series B e C. Isso confere familiaridade com hipercrescimento e interlocução direta com fundos e due diligence, ainda que na dimensão financeira, e o perfil declara pragmatismo e foco em resultados rápidos, aderente ao ritmo de execução exigido. Esses pontos, contudo, são periféricos ao mandato. Não há evidência de liderança técnica, IA, arquitetura de dados, atuação hands-on ou formação de times de engenharia, e a graduação em engenharia não sustenta domínio técnico atual. A posição pede quem construa stack e time do zero; o histórico aponta para a função oposta. Eventual valor estaria em outra cadeira da companhia, não nesta.",
+            "headline": "Trajetória financeira sênior em ambiente de alto crescimento, sem aderência aos requisitos técnicos do mandato.",
+            "analysis": "Ana Silva traz atuação como CFO de fintech unicórnio, especialização em M&A, reestruturação financeira e condução de rodadas Series B e C, o que implica interlocução recorrente com fundos e board e vivência em crescimento acelerado. O perfil declarado é pragmático e orientado a resultados rápidos, o que sugere adaptabilidade ao ritmo descrito no mandato. O desalinhamento, porém, é estrutural: não há evidência de liderança técnica, decisões de arquitetura, viés em IA e dados aplicados a produto, prática hands-on em código ou formação e retenção de time de engenharia. A formação em Engenharia não substitui esses essenciais. O desafio aqui é construir engenharia do zero, função distinta da cadeira financeira ocupada.",
             "recommendation": "nao_priorizar",
             "evidence": [
               {
-                "requirement": "Pragmatismo na priorização e velocidade de execução",
-                "claim": "O perfil declara orientação pragmática e foco em resultados rápidos, compatível com o ritmo exigido.",
-                "quote": "Perfil pragmático, voltado para resultados rápidos",
+                "requirement": "Pragmatismo na priorização entre velocidade e robustez técnica",
+                "claim": "O perfil declara orientação pragmática e a resultados rápidos, ainda que sem aplicação ao domínio técnico.",
+                "quote": "Perfil pragmático, voltado para resultados rápidos.",
                 "verified": true,
                 "match_score": 100.0,
                 "start": 161,
                 "end": 211
               },
               {
-                "requirement": "Interlocução com investidores e due diligence técnica",
-                "claim": "A condução de rodadas Series B e C implica interlocução direta com fundos e processos de due diligence, ainda que na dimensão financeira.",
+                "requirement": "Interlocução com investidores e board em temas de tecnologia",
+                "claim": "A condução de rodadas Series B e C implica interlocução recorrente com fundos e board, embora em pauta financeira.",
                 "quote": "Especialista em M&A, reestruturação financeira e captação de recursos (Series B e C)",
                 "verified": true,
                 "match_score": 100.0,
@@ -349,9 +341,9 @@
                 "end": 159
               },
               {
-                "requirement": "Vivência em ambiente de hipercrescimento",
-                "claim": "A passagem como CFO de fintech unicórnio indica exposição a escala acelerada, em perspectiva financeira.",
-                "quote": "Ex-CFO de fintech unicórnio",
+                "requirement": "Alta adaptabilidade em ambiente dinâmico",
+                "claim": "A passagem como CFO de fintech unicórnio indica vivência em ambiente de crescimento acelerado.",
+                "quote": "Ex-CFO de fintech unicórnio.",
                 "verified": true,
                 "match_score": 100.0,
                 "start": 46,
@@ -359,16 +351,16 @@
               }
             ],
             "gaps": [
-              "Liderança técnica sênior em nível de CTO ou equivalente",
-              "Domínio de inteligência artificial e engenharia/arquitetura de dados",
-              "Desenho e implementação de arquitetura escalável a partir do zero",
-              "Atuação hands-on em código e decisões técnicas do dia a dia",
-              "Formação e escala de times de engenharia"
+              "Liderança técnica sênior em nível de CTO",
+              "Viés forte em IA e dados aplicados a produto",
+              "Atuação hands-on em código e decisões de arquitetura",
+              "Desenho e construção de arquitetura escalável do zero",
+              "Escala de time técnico: contratação, estruturação e retenção"
             ],
             "interview_focus": [
-              "Esclarecer se houve qualquer responsabilidade direta sobre tecnologia, produto ou engenharia na fintech, além do escopo financeiro.",
-              "Entender a motivação para migrar de uma trajetória de CFO para um mandato técnico hands-on e qual a base técnica atualizada.",
-              "Aprofundar o papel na due diligence das rodadas Series B e C, verificando exposição à avaliação técnica de stack e dados."
+              "Entender se houve qualquer responsabilidade direta sobre tecnologia, dados ou produto na fintech, além da agenda financeira.",
+              "Explorar o conteúdo técnico da interlocução com board e investidores nas rodadas Series B e C.",
+              "Verificar a intenção de carreira: o perfil parece mais aderente a mandatos de CFO/COO do que ao escopo de CTO descrito."
             ],
             "profile_text": "15 anos de experiência no mercado financeiro. Ex-CFO de fintech unicórnio. Especialista em M&A, reestruturação financeira e captação de recursos (Series B e C). Perfil pragmático, voltado para resultados rápidos. Formação em Engenharia (Poli-USP) e MBA em Stanford."
           }
@@ -378,16 +370,19 @@
             "candidate_id": "cand-diego-souza",
             "name": "Diego Souza",
             "final_score": 10.0,
-            "reason": "Dezoito anos em indústria pesada e finanças corporativas configuram contexto inverso ao de startup B2B em hipercrescimento com stack em construção. A experiência é de controle e auditoria em estrutura madura, não de construção do zero."
+            "reason": "Dezoito anos em indústria pesada e estruturas consolidadas contrastam com startup B2B em formação e crescimento acelerado. Não há evidência de vivência em SaaS, ambiente de escala ou estrutura técnica incipiente."
           }
         ],
         "metadata": {
-          "run_id": "7359de4148de",
+          "run_id": "734fc12dcaa2",
           "model": "claude-opus-5",
-          "elapsed_ms": 54343,
+          "elapsed_ms": 58509,
           "candidates_screened": 4,
           "pii_redactions": 0,
-          "llm_calls": 6
+          "llm_calls": 6,
+          "input_tokens": 17589,
+          "output_tokens": 7024,
+          "cost_usd": 0.2635
         }
       }
     },
@@ -397,31 +392,31 @@
       "expected_top": "cand-ana-silva",
       "predicted_ranking": [
         "cand-ana-silva",
-        "cand-carolina-mendes",
         "cand-diego-souza",
+        "cand-carolina-mendes",
         "cand-bruno-costa"
       ],
       "hit_at_1": true,
       "reciprocal_rank": 1.0,
       "grounding_rate": 1.0,
       "judge": {
-        "executive_tone": 4,
-        "decision_usefulness": 4,
+        "executive_tone": 5,
+        "decision_usefulness": 3,
         "factual_consistency": 4,
-        "critique": "O parecer é analítico e bem estruturado, mas peca em dois pontos: (1) tensiona o currículo ao afirmar ausência de evidência de due diligence/data room para Ana Silva, quando o CV a descreve explicitamente como 'especialista em M&A' — a ressalva precisa ser reformulada como ponto de validação, não como lacuna; (2) a recomendação termina em uma alternativa genérica ('avançar ou reabrir a busca') sem plano concreto: quem entrevista, quais perguntas de calibragem testam board reporting, estruturação de time e métricas SaaS, prazo para decidir e se a quarta referência (CIO) foi descartada por critério explícito."
+        "critique": "O parecer diagnostica bem a assimetria do shortlist, mas para de onde deveria avançar: a recomendação final (\"validar lacunas ou ampliar a busca\") fica genérica, sem plano concreto — quais perguntas de entrevista/referência testam due diligence, board e formação de time; qual o perfil-alvo e prazo de um sourcing complementar. Além disso, afirmar que \"inglês não foi declarado\" para Ana Silva ignora o MBA em Stanford, inferência que enfraquece a ressalva e deveria ser reformulada como verificação, não lacuna."
       },
       "report": {
         "job": {
           "role_title": "Chief Financial Officer (CFO)",
-          "mandate": "Liderar a próxima rodada de captação institucional e estruturar a área financeira para sustentar um processo futuro de M&A.",
-          "company_context": "Empresa de tecnologia em fase de alto crescimento, com trajetória de captação junto a fundos institucionais e horizonte de M&A. O texto não detalha porte, receita ou estrutura atual.",
+          "mandate": "Liderar a próxima rodada de captação institucional e estruturar a empresa financeira e societariamente para um processo futuro de M&A.",
+          "company_context": "Empresa de tecnologia em fase de alto crescimento, com trajetória de captação institucional em curso e horizonte de transação societária (M&A).",
           "hard_requirements": [
             {
               "name": "Liderança de rodadas de captação institucional",
               "importance": "essencial"
             },
             {
-              "name": "Experiência prévia como executivo de finanças em startups de estágio avançado",
+              "name": "Experiência prévia em startups de estágio avançado (late stage)",
               "importance": "essencial"
             },
             {
@@ -429,27 +424,27 @@
               "importance": "essencial"
             },
             {
-              "name": "Preparação de empresa para processos de M&A",
+              "name": "Atuação em processos de M&A (sell-side ou buy-side)",
               "importance": "essencial"
             },
             {
-              "name": "Condução de due diligence financeira e data room",
+              "name": "Experiência no setor de tecnologia",
               "importance": "desejavel"
             },
             {
-              "name": "Modelagem financeira e valuation em contexto de tecnologia",
+              "name": "Condução de due diligence financeira e legal",
               "importance": "desejavel"
             },
             {
-              "name": "Governança, reporte a board e a investidores",
+              "name": "Estruturação de governança, controles e reporting para investidores",
               "importance": "desejavel"
             },
             {
-              "name": "Estruturação de controles, compliance e maturidade contábil para transação",
+              "name": "Gestão de board e conselho de administração",
               "importance": "desejavel"
             },
             {
-              "name": "Domínio de métricas SaaS/tecnologia (ARR, CAC, LTV, burn)",
+              "name": "Planejamento financeiro e gestão de capital em ambiente de alto crescimento",
               "importance": "desejavel"
             },
             {
@@ -459,39 +454,40 @@
           ],
           "soft_requirements": [
             {
-              "name": "Capacidade de articulação e influência junto a investidores e board",
+              "name": "Capacidade de interlocução com investidores e board",
               "importance": "essencial"
             },
             {
-              "name": "Atuação em ambiente de alto crescimento e mudança acelerada",
+              "name": "Visão estratégica associada a execução",
               "importance": "essencial"
             },
             {
-              "name": "Tolerância a ambiguidade e perfil mão na massa para construir estrutura",
+              "name": "Tolerância a ambiguidade e ambiente de mudança acelerada",
               "importance": "desejavel"
             },
             {
-              "name": "Visão estratégica combinada com disciplina de execução",
+              "name": "Construção e desenvolvimento de time financeiro",
               "importance": "desejavel"
             },
             {
-              "name": "Liderança e formação de time financeiro em escala",
+              "name": "Resiliência sob pressão de prazos de transação",
               "importance": "desejavel"
             }
           ],
           "search_queries": [
-            "CFO de startup de tecnologia que liderou rodadas Series B e C com fundos de venture capital",
-            "Executivo de finanças com experiência em preparação e execução de M&A e due diligence",
-            "CFO de scale-up em alto crescimento responsável por governança, board e relação com investidores",
-            "Liderança financeira com estruturação de controles, reporting e métricas SaaS em empresa de tecnologia"
+            "CFO de startup de tecnologia late stage que liderou rodadas Series B e C com fundos de venture capital",
+            "Executivo de finanças responsável por processo de M&A, due diligence e negociação com investidores institucionais",
+            "CFO em empresa de tecnologia de alto crescimento com estruturação de governança, controles e reporting a board",
+            "Líder financeiro com relacionamento ativo com fundos de VC e private equity e histórico de captação institucional",
+            "Head de finanças que preparou empresa para venda ou fusão, conduzindo valuation e data room"
           ]
         },
-        "executive_summary": "O shortlist tem um único candidato aderente ao mandato: Ana Silva, que cobre captação institucional, cadeira de CFO em estágio avançado e M&A. Carolina Mendes e Diego Souza não atendem aos requisitos essenciais — um por eixo funcional técnico, outro por perfil conservador de indústria pesada. A decisão real do sócio não é comparativa, e sim de suficiência: avançar com um shortlist de um nome, validando as lacunas de governança de board, construção de time e maturidade contábil de Ana Silva, ou reabrir a busca em paralelo.",
+        "executive_summary": "O shortlist é assimétrico: apenas Ana Silva endereça o núcleo do mandato — captação institucional, M&A e late stage em tecnologia. Diego Souza traz governança e controles, mas sem qualquer aderência a captação, venture capital ou M&A; Carolina Mendes é perfil técnico, fora do escopo da função. A decisão real não é comparativa, e sim binária: validar as lacunas de Ana Silva (board, governança para investidores, due diligence, inglês, formação de time) ou ampliar a busca para garantir alternativa real de comparação.",
         "next_steps": [
-          "Entrevistar Ana Silva com foco nas lacunas: condução prática de due diligence e data room, reporte recorrente a board e investidores, e domínio de métricas de tecnologia (ARR, CAC, LTV, burn); resposta consistente com casos concretos sustenta 'avançar'.",
-          "Checar referências com investidores das rodadas Series B e C para confirmar relacionamento com fundos, desfecho do processo de M&A e fluência de interlocução em inglês.",
-          "Testar, em referência de pares e liderados, o traço declarado de 'resultados rápidos' frente à disciplina de controles e compliance pré-transação; sinal de atalho em governança rebaixa a recomendação.",
-          "Ativar busca complementar para no mínimo mais dois nomes com perfil SaaS e formação de time financeiro em escala, mantendo Ana Silva como referência de benchmark; dispensar a ampliação apenas se as validações acima forem integralmente positivas."
+          "Entrevistar Ana Silva com foco em transação societária efetivamente concluída, papel pessoal em due diligence financeira e legal, e desenho de reporting e governança para investidores; ausência de caso concreto de M&A executado rebaixa a recomendação.",
+          "Checar em referência com investidor ou membro de board das rodadas Series B e C a qualidade da interlocução com o conselho e a consistência do traço declarado de 'foco em resultados rápidos' em processos de maturação longa.",
+          "Confirmar objetivamente inglês de negociação e experiência de construção de time financeiro de Ana Silva; lacuna em ambos exige plano de mitigação (ex: nº 2 de finanças) como condição de avanço.",
+          "Abrir duas a três candidaturas adicionais com histórico comprovado de sell-side em tecnologia, dado que Diego Souza e Carolina Mendes não constituem alternativa comparável."
         ],
         "top_candidates": [
           {
@@ -499,30 +495,30 @@
             "candidate_id": "cand-ana-silva",
             "name": "Ana Silva",
             "current_role": "Ex-CFO, fintech unicórnio",
-            "final_score": 74.0,
-            "retrieval_score": 0.996,
+            "final_score": 71.0,
+            "retrieval_score": 0.9263,
             "grounding_rate": 1.0,
             "scores": {
               "hard_skills": {
                 "score": 8,
-                "rationale": "O perfil cobre os três eixos essenciais — captação institucional (Series B e C), atuação como CFO em fintech de estágio avançado e especialização em M&A. Faltam evidências diretas sobre métricas SaaS, data room, governança de board e inglês, embora a formação em Stanford sugira proficiência não declarada."
+                "rationale": "O perfil cobre os essenciais de captação institucional (Series B e C), M&A e atuação como CFO em fintech unicórnio, o que sustenta contexto de late stage e setor de tecnologia financeira. Faltam evidências explícitas de due diligence, governança/reporting a investidores, gestão de board e inglês fluente."
               },
               "soft_skills": {
-                "score": 6,
-                "rationale": "O traço declarado é pragmatismo e foco em resultados rápidos, compatível com ambiente de alto crescimento, mas o perfil não traz evidência de articulação com board, tolerância a ambiguidade ou formação de time financeiro em escala. O viés de 'resultados rápidos' pode tensionar com a construção paciente de maturidade contábil para transação."
+                "score": 5,
+                "rationale": "A condução de rodadas Series B e C e a atuação como CFO implicam interlocução com investidores, mas o perfil não descreve construção de time nem gestão de board. O traço declarado de foco em 'resultados rápidos' pode tensionar com a maturação longa de processos de captação e M&A e precisa ser testado."
               },
               "context_fit": {
                 "score": 8,
-                "rationale": "A trajetória em fintech unicórnio com rodadas Series B e C replica o estágio e o tipo de desafio do mandato — escalar finanças sob capital institucional com horizonte de liquidez. A ressalva é que o mandato é de tecnologia genérica e o perfil não explicita experiência em modelo SaaS nem o desfecho do processo de M&A."
+                "rationale": "Ex-CFO de fintech unicórnio com Series B e C endereça diretamente o estágio avançado e o desafio de captação/M&A do mandato. A ressalva é a ausência de indicação sobre porte, internacionalização e se a trajetória incluiu efetivamente transação societária concluída no lado da empresa."
               }
             },
-            "headline": "Único nome do shortlist que cobre os três eixos essenciais do mandato, com lacunas de governança e construção de estrutura a validar.",
-            "analysis": "A trajetória de Ana Silva endereça diretamente o mandato: captação em Series B e C, cadeira de CFO em fintech unicórnio e especialização declarada em M&A. O estágio de empresa replica o desafio proposto — escalar finanças sob capital institucional com horizonte de liquidez —, o que diferencia Ana Silva dos demais, cujos eixos funcionais são alheios a finanças de venture. As ressalvas são relevantes e concentradas na segunda metade do mandato: não há evidência de reporte recorrente a board, de condução operacional de due diligence e data room, de formação de time financeiro em escala nem de domínio de métricas SaaS. O traço declarado de pragmatismo e resultados rápidos favorece o ritmo de captação, mas pode tensionar com a construção paciente de controles e maturidade contábil exigida antes de uma transação. Inglês é inferido, não declarado.",
+            "headline": "Único do shortlist com aderência direta ao núcleo do mandato: captação institucional, M&A e late stage em tecnologia.",
+            "analysis": "A trajetória de Ana Silva cobre os quatro eixos essenciais: condução de rodadas Series B e C, M&A declarado como área de especialização, passagem como CFO de fintech que atingiu status de unicórnio e 15 anos de mercado financeiro com reestruturação e gestão de capital. É o único do shortlist cujo histórico coincide com o tipo de desafio, e não apenas com o cargo. As ressalvas são relevantes e concentram-se no que o mandato exige a jusante da captação: não há evidência explícita de condução de due diligence, de estruturação de governança e reporting a investidores, de gestão de board nem de construção de time financeiro. O traço declarado de orientação a resultados rápidos precisa ser testado contra a maturação longa de um processo de M&A. Inglês não foi declarado.",
             "recommendation": "avancar_com_ressalvas",
             "evidence": [
               {
                 "requirement": "Liderança de rodadas de captação institucional",
-                "claim": "Conduziu captação em estágios institucionais avançados, o que implica interlocução direta com fundos.",
+                "claim": "Atuação direta em captação de recursos em estágios institucionais de venture capital.",
                 "quote": "captação de recursos (Series B e C)",
                 "verified": true,
                 "match_score": 100.0,
@@ -530,17 +526,8 @@
                 "end": 159
               },
               {
-                "requirement": "Experiência prévia como executivo de finanças em startups de estágio avançado",
-                "claim": "Ocupou a cadeira de CFO em empresa de tecnologia financeira já em estágio de escala relevante.",
-                "quote": "Ex-CFO de fintech unicórnio",
-                "verified": true,
-                "match_score": 100.0,
-                "start": 46,
-                "end": 73
-              },
-              {
-                "requirement": "Preparação de empresa para processos de M&A",
-                "claim": "Declara especialização em M&A, aderente ao horizonte transacional do mandato.",
+                "requirement": "Atuação em processos de M&A",
+                "claim": "M&A é declarado como área de especialização.",
                 "quote": "Especialista em M&A, reestruturação financeira",
                 "verified": true,
                 "match_score": 100.0,
@@ -548,8 +535,26 @@
                 "end": 121
               },
               {
-                "requirement": "Atuação em ambiente de alto crescimento e mudança acelerada",
-                "claim": "O estilo declarado é orientado a velocidade de execução, compatível com ritmo de alto crescimento.",
+                "requirement": "Experiência prévia em startups de estágio avançado (late stage)",
+                "claim": "Passagem como CFO em empresa que atingiu status de unicórnio, indicativo de estágio avançado.",
+                "quote": "Ex-CFO de fintech unicórnio",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 46,
+                "end": 73
+              },
+              {
+                "requirement": "Experiência no setor de tecnologia",
+                "claim": "Trajetória em fintech, interseção entre tecnologia e serviços financeiros.",
+                "quote": "Ex-CFO de fintech unicórnio",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 46,
+                "end": 73
+              },
+              {
+                "requirement": "Visão estratégica associada a execução",
+                "claim": "Orientação declarada a execução e resultado, com senioridade de C-Level em mercado financeiro.",
                 "quote": "Perfil pragmático, voltado para resultados rápidos",
                 "verified": true,
                 "match_score": 100.0,
@@ -557,58 +562,144 @@
                 "end": 211
               },
               {
-                "requirement": "Inglês fluente para interlocução com investidores internacionais",
-                "claim": "Formação de pós-graduação nos Estados Unidos indica interlocução em inglês, ainda que a fluência não seja declarada.",
-                "quote": "MBA em Stanford",
+                "requirement": "Planejamento financeiro e gestão de capital em ambiente de alto crescimento",
+                "claim": "Domínio de reestruturação financeira e gestão de capital em ciclo de crescimento acelerado.",
+                "quote": "15 anos de experiência no mercado financeiro",
                 "verified": true,
                 "match_score": 100.0,
-                "start": 249,
-                "end": 264
+                "start": 0,
+                "end": 44
               }
             ],
             "gaps": [
-              "Domínio explícito de métricas SaaS/tecnologia (ARR, CAC, LTV, burn)",
-              "Governança formal e reporte recorrente a board e investidores",
-              "Liderança e formação de time financeiro em escala",
-              "Estruturação de controles, compliance e maturidade contábil para transação",
-              "Condução operacional de due diligence e data room"
+              "Gestão de board e conselho de administração",
+              "Estruturação de governança, controles e reporting para investidores",
+              "Condução de due diligence financeira e legal",
+              "Inglês fluente para interlocução com investidores internacionais (não declarado, ainda que o MBA em Stanford sugira)",
+              "Construção e desenvolvimento de time financeiro"
             ],
             "interview_focus": [
-              "Detalhar o papel efetivo nas rodadas Series B e C: liderança do processo, fundos envolvidos e relacionamento remanescente com o ecossistema de venture capital.",
-              "Qualificar a atuação em M&A — lado comprador ou vendedor, preparação de data room, due diligence e desfecho das transações.",
-              "Testar a tensão entre 'resultados rápidos' e a disciplina de construção de controles, compliance e time financeiro exigida para sustentar uma transação."
+              "Natureza da atuação em M&A: papel efetivo em sell-side ou buy-side, transações concluídas e liderança de due diligence.",
+              "Profundidade do relacionamento com fundos de venture capital e se as rodadas Series B e C foram lideradas ou apenas suportadas, incluindo investidores internacionais.",
+              "Tensão entre o estilo de 'resultados rápidos' e a disciplina de governança, reporting e gestão de conselho exigida por um ciclo de captação e M&A."
             ],
             "profile_text": "15 anos de experiência no mercado financeiro. Ex-CFO de fintech unicórnio. Especialista em M&A, reestruturação financeira e captação de recursos (Series B e C). Perfil pragmático, voltado para resultados rápidos. Formação em Engenharia (Poli-USP) e MBA em Stanford."
           },
           {
             "rank": 2,
+            "candidate_id": "cand-diego-souza",
+            "name": "Diego Souza",
+            "current_role": "CFO, indústria pesada",
+            "final_score": 27.0,
+            "retrieval_score": 0.8445,
+            "grounding_rate": 1.0,
+            "scores": {
+              "hard_skills": {
+                "score": 3,
+                "rationale": "Há evidência sólida apenas em governança, controles e compliance, além de senioridade como CFO e implantação global de ERP. Não há qualquer menção a captação institucional, M&A, venture capital ou setor de tecnologia — quatro dos requisitos essenciais."
+              },
+              "soft_skills": {
+                "score": 3,
+                "rationale": "O perfil é descrito como \"extremamente conservador\", o que se opõe à tolerância a ambiguidade e ao ritmo de mudança acelerada exigidos. Não há evidência de interlocução com investidores ou board, nem de atuação sob pressão de prazos de transação."
+              },
+              "context_fit": {
+                "score": 2,
+                "rationale": "A trajetória é integralmente em indústria pesada e finanças corporativas de controle, contexto oposto a uma empresa de tecnologia late stage com horizonte de captação e M&A. A experiência coincide no cargo (CFO), não no tipo de desafio."
+              }
+            },
+            "headline": "Força em governança e controles, sem aderência aos essenciais de captação, venture capital e M&A.",
+            "analysis": "Diego Souza apresenta senioridade como CFO, 18 anos em finanças corporativas e evidência consistente em governança, compliance, auditoria e implantação global de ERP — disciplina útil à fase de due diligence. Contudo, quatro requisitos essenciais do mandato ficam sem qualquer sustentação: captação institucional, late stage, relacionamento com fundos de venture capital e atuação em M&A. A trajetória é integralmente em indústria pesada, contexto oposto a uma empresa de tecnologia em alto crescimento com horizonte de transação societária. No plano comportamental, o perfil descrito como extremamente conservador tensiona com a tolerância a ambiguidade e o ritmo de mudança exigidos, e não há indício de interlocução com investidores ou board. A coincidência é de cargo, não de desafio.",
+            "recommendation": "nao_priorizar",
+            "evidence": [
+              {
+                "requirement": "Estruturação de governança, controles e reporting para investidores",
+                "claim": "Trajetória consistente em governança e controles, ainda que orientada a compliance e auditoria e não a reporting para investidores.",
+                "quote": "CFO focado em controle de custos, compliance e auditoria",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 54,
+                "end": 110
+              },
+              {
+                "requirement": "Estruturação de governança, controles e reporting para investidores",
+                "claim": "Orientação declarada a governança rigorosa, aderente à disciplina exigida em due diligence, mas com viés conservador.",
+                "quote": "Perfil extremamente conservador, focado em governança rigorosa",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 152,
+                "end": 214
+              },
+              {
+                "requirement": "Planejamento financeiro e gestão de capital em ambiente de alto crescimento",
+                "claim": "Senioridade e escopo global em finanças corporativas, porém em indústria pesada e não em ambiente de alto crescimento.",
+                "quote": "18 anos em finanças corporativas na indústria pesada",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 0,
+                "end": 52
+              },
+              {
+                "requirement": "Estruturação de governança, controles e reporting para investidores",
+                "claim": "Capacidade de conduzir projeto estruturante de sistemas em escala internacional.",
+                "quote": "Liderou implantação de SAP globalmente",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 112,
+                "end": 150
+              }
+            ],
+            "gaps": [
+              "Liderança de rodadas de captação institucional (essencial) — sem qualquer menção",
+              "Experiência prévia em startups late stage (essencial) — trajetória exclusivamente em indústria pesada",
+              "Relacionamento com fundos de venture capital (essencial) — sem evidência",
+              "Atuação em processos de M&A, sell-side ou buy-side (essencial) — sem evidência",
+              "Interlocução com investidores e board, e inglês fluente para investidores internacionais — não mencionados"
+            ],
+            "interview_focus": [
+              "Verificar se a implantação global de SAP envolveu interlocução com conselho, acionistas ou instâncias de governança corporativa e em que idioma.",
+              "Explorar se houve participação, ainda que de suporte, em operações societárias, integrações ou due diligences na indústria pesada.",
+              "Testar disposição e adaptabilidade a ambiente de alta ambiguidade e velocidade, dado o perfil declaradamente conservador."
+            ],
+            "profile_text": "18 anos em finanças corporativas na indústria pesada. CFO focado em controle de custos, compliance e auditoria. Liderou implantação de SAP globalmente. Perfil extremamente conservador, focado em governança rigorosa. Economia (Insper)."
+          },
+          {
+            "rank": 3,
             "candidate_id": "cand-carolina-mendes",
             "name": "Carolina Mendes",
             "current_role": "CTO, startup de logística",
-            "final_score": 28.0,
-            "retrieval_score": 0.5598,
+            "final_score": 25.0,
+            "retrieval_score": 0.549,
             "grounding_rate": 1.0,
             "scores": {
               "hard_skills": {
                 "score": 1,
-                "rationale": "A trajetória de CANDIDATO_03 é integralmente tecnológica (CTO, IA, dados, Python), sem qualquer evidência de finanças, captação institucional, M&A, valuation ou governança financeira. Nenhum dos requisitos técnicos essenciais do mandato encontra sustentação no perfil."
+                "rationale": "O perfil é integralmente técnico-tecnológico (IA, dados, engenharia), sem qualquer evidência de captação institucional, M&A, due diligence, governança financeira ou reporting a investidores. Nenhum dos requisitos essenciais do mandato de CFO encontra sustentação no texto."
               },
               "soft_skills": {
-                "score": 5,
-                "rationale": "Há evidência consistente de atuação em ambiente de alto crescimento, ambiguidade e perfil mão na massa, além de construção de times do zero. Falta, contudo, qualquer indício de articulação e influência junto a investidores e board, requisito comportamental essencial."
+                "score": 4,
+                "rationale": "Há evidência de adaptabilidade, atuação sob pressão e construção de times do zero, atributos transferíveis ao mandato. Faltam, contudo, indícios de interlocução com investidores e board, requisito comportamental essencial."
               },
               "context_fit": {
                 "score": 3,
-                "rationale": "O contexto de startup de tecnologia em ambiente de pouca estrutura e alta pressão é aderente, mas o eixo funcional é oposto ao do mandato: liderança técnica, não financeira. Mesmo estágio de empresa, natureza de desafio distinta."
+                "rationale": "A trajetória ocorre em ambiente de startup de tecnologia com pouca estrutura, o que aproxima parcialmente do contexto, mas o estágio (late stage, pré-M&A) e a natureza do cargo (finanças e societário) não são cobertos. A experiência é no mesmo ecossistema, não no mesmo tipo de desafio."
               }
             },
-            "headline": "Perfil de liderança técnica com fit de ambiente, sem qualquer sustentação nos requisitos financeiros essenciais.",
-            "analysis": "Carolina Mendes apresenta aderência apenas ao contexto: atuação em startup de baixa estruturação e alta pressão, postura mão na massa e histórico de escalar times do zero — atributos comportamentais compatíveis com o ambiente descrito no mandato. O eixo funcional, contudo, é oposto ao requerido. Não há evidência de captação institucional, relacionamento com fundos de venture capital, preparação para M&A, due diligence, valuation, controles contábeis ou métricas financeiras de tecnologia. A formação de times ocorreu em engenharia, não em finanças, e não há indício de articulação e influência junto a investidores e board, requisito comportamental essencial. Trata-se de mesmo estágio de empresa com natureza de desafio distinta; não há caminho de mitigação dentro do escopo desta posição.",
+            "headline": "Trajetória técnica no ecossistema de tecnologia, sem cobertura da função financeira e societária do mandato.",
+            "analysis": "A trajetória de Carolina Mendes soma 12 anos em tecnologia e passagem como CTO em startup de logística, com evidência de adaptabilidade em ambientes de alta pressão e pouca estrutura e de escalar times do zero — atributos comportamentais transferíveis. O eixo, porém, é engenharia e produto: não há evidência de captação institucional, relacionamento com fundos de venture capital, M&A, due diligence, governança ou reporting a investidores, nem de interlocução com investidores e board, requisito comportamental essencial. O contexto de startup aproxima parcialmente, mas o estágio late stage e a natureza financeira e societária da posição não são cobertos. Para um mandato centrado em rodada institucional e preparação para transação, o encaixe é insuficiente.",
             "recommendation": "nao_priorizar",
             "evidence": [
               {
-                "requirement": "Atuação em ambiente de alto crescimento e mudança acelerada",
-                "claim": "A trajetória se deu em contexto de startup com baixa estruturação e pressão elevada, compatível com o ambiente descrito no mandato.",
+                "requirement": "Experiência no setor de tecnologia",
+                "claim": "CANDIDATO_03 acumula trajetória longa e senior no setor de tecnologia, ainda que pelo eixo de engenharia e produto.",
+                "quote": "12 anos em tech. CTO em startup de logística.",
+                "verified": true,
+                "match_score": 100.0,
+                "start": 0,
+                "end": 44
+              },
+              {
+                "requirement": "Tolerância a ambiguidade e ambiente de mudança acelerada",
+                "claim": "A trajetória se desenvolveu em contextos de baixa estrutura e alta pressão, compatíveis com ambiente de crescimento acelerado.",
                 "quote": "alta adaptabilidade, acostumada a ambientes de alta pressão e pouca estrutura",
                 "verified": true,
                 "match_score": 100.0,
@@ -616,17 +707,8 @@
                 "end": 270
               },
               {
-                "requirement": "Tolerância a ambiguidade e perfil mão na massa para construir estrutura",
-                "claim": "O perfil indica execução direta e construção de estrutura a partir do zero, ainda que na dimensão técnica.",
-                "quote": "Hands-on, programa em Python e escala times ágeis do zero",
-                "verified": true,
-                "match_score": 100.0,
-                "start": 117,
-                "end": 174
-              },
-              {
-                "requirement": "Liderança e formação de time financeiro em escala",
-                "claim": "Há histórico de formação e escala de times, porém em engenharia, não em finanças.",
+                "requirement": "Construção e desenvolvimento de time",
+                "claim": "Há evidência de formação de equipes a partir do zero, embora em função técnica e não financeira.",
                 "quote": "escala times ágeis do zero",
                 "verified": true,
                 "match_score": 100.0,
@@ -636,85 +718,17 @@
             ],
             "gaps": [
               "Liderança de rodadas de captação institucional",
-              "Experiência prévia como executivo de finanças em startup de estágio avançado",
+              "Experiência prévia em startups de estágio avançado (late stage)",
               "Relacionamento consolidado com fundos de venture capital",
-              "Preparação de empresa para processos de M&A, due diligence e data room",
-              "Modelagem financeira, valuation, controles contábeis e métricas SaaS"
+              "Atuação em processos de M&A (sell-side ou buy-side)",
+              "Interlocução com investidores e board / governança, controles e reporting"
             ],
             "interview_focus": [
-              "Eventual exposição de Carolina Mendes a rodadas de captação na condição de CTO — participação em diligências técnicas, interlocução com fundos ou construção de business case, ainda que sem responsabilidade financeira.",
-              "Grau de interação com board e investidores no papel atual e natureza dessa interlocução.",
-              "Existência de interesse e movimento concreto de transição para o eixo financeiro, ou se o encaixe real seria em mandato de CTO."
+              "Grau de exposição, ainda que indireto, a rodadas de captação e a interações com fundos na condição de CTO — participação em due diligence técnica, data room ou apresentações a investidores.",
+              "Interesse e racional de transição de carreira do eixo tecnológico para o financeiro; se há formação ou atuação complementar em finanças não declarada no perfil.",
+              "Aderência ao mandato em papel alternativo (CTO em empresa de tecnologia pré-M&A), caso o processo de CFO se mostre inviável."
             ],
             "profile_text": "12 anos em tech. CTO em startup de logística. Foco absoluto em Inteligência Artificial, dados e otimização de rotas. Hands-on, programa em Python e escala times ágeis do zero. Perfil inovador, alta adaptabilidade, acostumada a ambientes de alta pressão e pouca estrutura. Matemática (UFRJ)."
-          },
-          {
-            "rank": 3,
-            "candidate_id": "cand-diego-souza",
-            "name": "Diego Souza",
-            "current_role": "CFO, indústria pesada",
-            "final_score": 24.0,
-            "retrieval_score": 0.8226,
-            "grounding_rate": 1.0,
-            "scores": {
-              "hard_skills": {
-                "score": 3,
-                "rationale": "O perfil sustenta governança, compliance, auditoria e controle de custos, além de implantação global de SAP, mas não há qualquer evidência de captação institucional, relacionamento com venture capital, preparação para M&A ou métricas SaaS."
-              },
-              "soft_skills": {
-                "score": 2,
-                "rationale": "O texto descreve perfil \"extremamente conservador\" e voltado a \"governança rigorosa\", estilo oposto à tolerância a ambiguidade e à articulação com investidores exigidas pelo mandato. Não há indício de atuação em ambiente de alto crescimento."
-              },
-              "context_fit": {
-                "score": 2,
-                "rationale": "A trajetória é integralmente em indústria pesada e finanças corporativas, contexto distinto de startup de estágio avançado em tecnologia. Há coincidência de cargo (CFO), não de desafio."
-              }
-            },
-            "headline": "Coincidência de cargo sem coincidência de desafio: governança e controles sólidos, mas fora do contexto de venture e M&A.",
-            "analysis": "Diego Souza oferece base real em controle de custos, compliance, auditoria e implantação global de SAP, competências úteis para maturidade contábil pré-transação e para condução de projeto financeiro multigeografia. Esse é o único ponto de contato com o mandato. Falta o núcleo essencial: captação institucional, relacionamento com fundos de venture capital, preparação para M&A, due diligence e data room, além de métricas de tecnologia e inglês para investidores internacionais. No eixo comportamental, o perfil declarado como extremamente conservador e voltado a governança rigorosa contrasta com a tolerância a ambiguidade e a articulação com investidores exigidas. A trajetória em indústria pesada e finanças corporativas configura fit de título, não de desafio, e o gap não é superável por onboarding.",
-            "recommendation": "nao_priorizar",
-            "evidence": [
-              {
-                "requirement": "Estruturação de controles, compliance e maturidade contábil para transação",
-                "claim": "CANDIDATO_04 tem foco declarado em controles, compliance e auditoria, base útil para maturidade contábil pré-transação, ainda que sem vínculo comprovado com M&A.",
-                "quote": "CFO focado em controle de custos, compliance e auditoria",
-                "verified": true,
-                "match_score": 100.0,
-                "start": 54,
-                "end": 110
-              },
-              {
-                "requirement": "Governança, reporte a board e a investidores",
-                "claim": "Há orientação explícita a governança, embora o perfil não mencione interlocução com board ou investidores.",
-                "quote": "Perfil extremamente conservador, focado em governança rigorosa",
-                "verified": true,
-                "match_score": 100.0,
-                "start": 152,
-                "end": 214
-              },
-              {
-                "requirement": "Liderança e formação de time financeiro em escala",
-                "claim": "A condução de implantação global de ERP indica capacidade de liderar projeto financeiro de larga escala e múltiplas geografias.",
-                "quote": "Liderou implantação de SAP globalmente",
-                "verified": true,
-                "match_score": 100.0,
-                "start": 112,
-                "end": 150
-              }
-            ],
-            "gaps": [
-              "Liderança de rodadas de captação institucional",
-              "Experiência como executivo de finanças em startups de estágio avançado",
-              "Relacionamento com fundos de venture capital",
-              "Preparação de empresa para M&A, due diligence e data room",
-              "Métricas SaaS/tecnologia (ARR, CAC, LTV, burn) e inglês fluente para investidores internacionais"
-            ],
-            "interview_focus": [
-              "Verificar se a implantação global de SAP envolveu interlocução com board, acionistas ou bancos, e em que idioma.",
-              "Explorar eventual exposição a operações de fusão, aquisição ou carve-out na indústria pesada não descrita no perfil.",
-              "Testar apetite e adaptabilidade a ambiente de alto crescimento, dado o traço conservador declarado."
-            ],
-            "profile_text": "18 anos em finanças corporativas na indústria pesada. CFO focado em controle de custos, compliance e auditoria. Liderou implantação de SAP globalmente. Perfil extremamente conservador, focado em governança rigorosa. Economia (Insper)."
           }
         ],
         "also_considered": [
@@ -722,16 +736,19 @@
             "candidate_id": "cand-bruno-costa",
             "name": "Bruno Costa",
             "final_score": 16.0,
-            "reason": "O contexto é de banco de varejo tradicional, distante de startup de estágio avançado em alto crescimento com horizonte de captação e M&A. Não há qualquer sinal de interlocução com fundos ou board de investidores."
+            "reason": "O contexto de atuação é banco de varejo tradicional, oposto ao ambiente de startup late stage em alto crescimento com horizonte de M&A. A senioridade existe, mas em função e ambiente distintos do mandato."
           }
         ],
         "metadata": {
-          "run_id": "4003dd0cd0c7",
+          "run_id": "da0c1c85b57e",
           "model": "claude-opus-5",
-          "elapsed_ms": 46112,
+          "elapsed_ms": 47911,
           "candidates_screened": 4,
           "pii_redactions": 0,
-          "llm_calls": 6
+          "llm_calls": 6,
+          "input_tokens": 17047,
+          "output_tokens": 6667,
+          "cost_usd": 0.2519
         }
       }
     }

@@ -6,6 +6,7 @@ Uses the Gemini API with a key; ``GEMINI_USE_VERTEX=true`` switches to Vertex
 AI with Application Default Credentials, which is the production path on GCP.
 """
 
+import asyncio
 import time
 from functools import cached_property
 from typing import TypeVar
@@ -35,11 +36,22 @@ class GeminiClient:
     def __init__(self, settings: Settings) -> None:
         self.model = settings.gemini_model
         self._settings = settings
+        # Caps parallel calls so the per-minute quota is respected instead of retried against.
+        self._slots = asyncio.Semaphore(settings.llm_max_concurrency)
 
     @cached_property
     def _client(self) -> genai.Client:
         s = self._settings
-        http = types.HttpOptions(timeout=int(s.llm_timeout_s * 1000))
+        http = types.HttpOptions(
+            timeout=int(s.llm_timeout_s * 1000),
+            # Same policy as the Anthropic SDK: back off on rate limits and overload.
+            retry_options=types.HttpRetryOptions(
+                attempts=6,
+                initial_delay=2.0,
+                max_delay=60.0,
+                http_status_codes=[408, 429, 500, 502, 503, 504],
+            ),
+        )
         if s.gemini_use_vertex:
             if not s.gcp_project_id:
                 raise LLMError("GCP_PROJECT_ID is required when GEMINI_USE_VERTEX=true")
@@ -59,9 +71,10 @@ class GeminiClient:
         )
         started = time.perf_counter()
         try:
-            response = await self._client.aio.models.generate_content(
-                model=self.model, contents=prompt, config=config
-            )
+            async with self._slots:
+                response = await self._client.aio.models.generate_content(
+                    model=self.model, contents=prompt, config=config
+                )
         except errors.ClientError as exc:
             if exc.code in (401, 403):
                 raise LLMError("invalid LLM credentials") from exc
