@@ -2,7 +2,7 @@
 
 import time
 import uuid
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Callable
 from contextlib import aclosing, suppress
 from typing import Any, cast
 
@@ -31,6 +31,16 @@ from curator.retrieval.vector_store import VectorStore
 log = structlog.get_logger(__name__)
 
 Event = dict[str, Any]
+
+
+def _deep_map(value: Any, fn: Callable[[str], str]) -> Any:
+    if isinstance(value, str):
+        return fn(value)
+    if isinstance(value, list):
+        return [_deep_map(v, fn) for v in value]
+    if isinstance(value, dict):
+        return {k: _deep_map(v, fn) for k, v in value.items()}
+    return value
 
 
 class CurationService:
@@ -160,7 +170,7 @@ class CurationService:
             }
             for c in ranking[settings.top_k :]
         ]
-        return MatchReport(
+        report = MatchReport(
             job=state["job_profile"],
             executive_summary=pseudo.reidentify(state["narrative"].executive_summary),
             next_steps=[pseudo.reidentify(step) for step in state["narrative"].next_steps],
@@ -204,6 +214,8 @@ class CurationService:
                 cost_usd=meter.cost_usd(settings.model_prices, self._deps.llm.model),
             ),
         )
+        # Safety net at the boundary: no pseudonym may reach the partner, whatever the field.
+        return MatchReport.model_validate(_deep_map(report.model_dump(), pseudo.reidentify))
 
     def _ranked(
         self, rank: int, c: ScoredCandidate, narrative: CandidateNarrative | None

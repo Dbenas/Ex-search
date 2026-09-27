@@ -67,7 +67,11 @@ class FakeLLM:
                 soft_skills=dim,
                 context_fit=dim,
                 evidence=[
-                    Evidence(requirement="IA e dados", claim="Experiência", quote=first_sentence),
+                    Evidence(
+                        requirement="IA e dados",
+                        claim=f"{alias.group(1)} tem experiência",
+                        quote=first_sentence,
+                    ),
                     Evidence(requirement="IA", claim="Inventado", quote="PhD em robótica pelo MIT"),
                 ],
                 gaps=["Sem evidência de board"],

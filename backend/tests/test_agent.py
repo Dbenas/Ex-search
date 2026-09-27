@@ -42,7 +42,8 @@ async def test_pipeline_produces_grounded_top3(service: CurationService) -> None
 async def test_names_are_restored_only_in_the_report(service: CurationService) -> None:
     report = await service.run(CTO_JOB)
     assert report.executive_summary == "Carolina Mendes lidera o shortlist."
-    assert "CANDIDATO_" not in report.top_candidates[0].analysis
+    # No pseudonym may survive anywhere in what the partner sees.
+    assert "CANDIDATO_" not in report.model_dump_json()
 
 
 async def test_llm_never_sees_pii(service: CurationService, fake_llm: FakeLLM) -> None:
