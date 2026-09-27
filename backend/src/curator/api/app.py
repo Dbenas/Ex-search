@@ -1,3 +1,4 @@
+import asyncio
 import json
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
@@ -5,7 +6,17 @@ from datetime import UTC, datetime
 from typing import Annotated, Any
 
 import structlog
-from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi import (
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    Response,
+    UploadFile,
+    status,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 
@@ -20,14 +31,17 @@ from curator.api.schemas import (
 )
 from curator.api.security import RateLimiter, client_key, require_api_key
 from curator.config import Settings, get_settings
-from curator.domain.models import MatchReport
+from curator.domain.models import MatchReport, UploadReport
+from curator.ingestion.extraction import MAX_TEXT_CHARS, ExtractionError, extract_cv, pdf_to_text
 from curator.logging import configure_logging
 from curator.privacy.pseudonymizer import redact
-from curator.service import CurationService, build_service
+from curator.service import CandidateError, CurationService, build_service
 
 log = structlog.get_logger(__name__)
 
 ServiceFactory = Callable[[Settings], CurationService]
+
+MAX_UPLOAD_BYTES = 2 * 1024 * 1024
 
 
 def create_app(
@@ -56,7 +70,7 @@ def create_app(
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "DELETE"],
         allow_headers=["Content-Type", "X-API-Key"],
     )
 
@@ -96,9 +110,53 @@ def create_app(
                 name=svc.repo.identity(p.candidate_id).name,
                 current_role=p.current_role,
                 profile_text=p.summary,
+                source=svc.repo.source(p.candidate_id),
             )
             for p in svc.repo.profiles
         ]
+
+    @app.post("/v1/candidates", response_model=UploadReport, status_code=status.HTTP_201_CREATED)
+    async def upload_candidate(
+        svc: Service,
+        _: RateLimited,
+        file: Annotated[UploadFile | None, File()] = None,
+        text: Annotated[str | None, Form(max_length=MAX_TEXT_CHARS)] = None,
+        name: Annotated[str | None, Form(max_length=80)] = None,
+        current_role: Annotated[str | None, Form(max_length=120)] = None,
+    ) -> UploadReport:
+        """Add a CV from a PDF/TXT file or pasted text. Identity is split off in code."""
+        if (file is None) == (text is None):
+            raise HTTPException(
+                status.HTTP_422_UNPROCESSABLE_CONTENT, "envie um arquivo ou cole o texto"
+            )
+        try:
+            if file is not None:
+                data = await file.read(MAX_UPLOAD_BYTES + 1)
+                if len(data) > MAX_UPLOAD_BYTES:
+                    raise ExtractionError("o arquivo excede 2 MB")
+                suffix = (file.filename or "").lower().rsplit(".", 1)[-1]
+                if suffix == "pdf":
+                    raw_text = await asyncio.to_thread(pdf_to_text, data)
+                elif suffix in ("txt", "md"):
+                    raw_text = data.decode("utf-8", errors="replace")
+                else:
+                    raise ExtractionError("formato não suportado; use PDF ou TXT")
+            else:
+                raw_text = text or ""
+            cv = extract_cv(raw_text)
+            return await svc.add_candidate(cv, name=name or None, current_role=current_role or None)
+        except (ExtractionError, CandidateError) as exc:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
+
+    @app.delete("/v1/candidates/{candidate_id}", status_code=status.HTTP_204_NO_CONTENT)
+    async def delete_candidate(candidate_id: str, svc: Service, _: RateLimited) -> Response:
+        try:
+            await svc.remove_candidate(candidate_id)
+        except KeyError as exc:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "currículo não encontrado") from exc
+        except CandidateError as exc:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, str(exc)) from exc
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @app.post("/v1/match", response_model=MatchReport)
     async def match(

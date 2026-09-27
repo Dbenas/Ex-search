@@ -120,6 +120,19 @@ export type CandidateSummary = {
   name: string;
   current_role: string;
   profile_text: string;
+  source: "base" | "upload";
+};
+
+export type UploadReport = {
+  candidate_id: string;
+  name: string;
+  current_role: string;
+  name_detected: boolean;
+  contacts_found: string[];
+  pii_removed: number;
+  chunks_indexed: number;
+  gender_cues: string[];
+  indexed_text: string;
 };
 
 export type EvaluationCase = {

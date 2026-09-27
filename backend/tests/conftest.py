@@ -1,4 +1,5 @@
 import re
+import shutil
 from pathlib import Path
 from typing import Any, TypeVar
 
@@ -108,7 +109,11 @@ class FakeLLM:
 @pytest.fixture(scope="session")
 def settings(tmp_path_factory: pytest.TempPathFactory) -> Settings:
     tmp: Path = tmp_path_factory.mktemp("curator")
+    # Uploads write CV files: work on a copy so tests never touch the real base.
+    candidates = tmp / "candidates"
+    shutil.copytree(BACKEND_ROOT / "data" / "candidates", candidates)
     return Settings(
+        candidates_dir=candidates,
         _env_file=None,  # type: ignore[call-arg]
         anthropic_api_key=None,
         chroma_dir=tmp / "chroma",

@@ -46,6 +46,13 @@ flowchart LR
 | `synthesize` | LLM | Parecer comparativo usando só evidências confirmadas |
 | `plan_search` | LLM, condicional | Perfis-alvo, segmentos, buscas booleanas e triagem; roda em paralelo ao parecer quando o líder é fraco ou deixa essenciais descobertos |
 
+### Entrada de currículos
+
+`POST /v1/candidates` aceita PDF, TXT ou texto colado. A extração (`ingestion/extraction.py`)
+é determinística: contatos por padrão, nome pelo layout, cargo pela linha seguinte. O arquivo
+é gravado com id gerado (nunca com o nome enviado), a base é reindexada de forma incremental
+e o grafo passa a enxergar o novo perfil sem reiniciar a API.
+
 O LLM entra onde há julgamento. Busca, verificação e ranking ficam em código: são
 determinísticos, testáveis e auditáveis.
 

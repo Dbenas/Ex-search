@@ -18,6 +18,8 @@ class RawCandidate:
     identity: CandidateIdentity
     current_role: str
     body: str
+    # "base" for the reference set, "upload" for CVs added through the interface.
+    source: str = "base"
 
 
 def parse_candidate_file(path: Path) -> RawCandidate:
@@ -41,7 +43,30 @@ def parse_candidate_file(path: Path) -> RawCandidate:
             email=meta.get("email"), phone=meta.get("phone"), linkedin=meta.get("linkedin")
         ),
     )
-    return RawCandidate(identity=identity, current_role=meta.get("current_role", ""), body=body)
+    return RawCandidate(
+        identity=identity,
+        current_role=meta.get("current_role") or "",
+        body=body,
+        source=meta.get("source", "base"),
+    )
+
+
+def write_candidate_file(directory: Path, raw: RawCandidate) -> Path:
+    """Persist a CV in the same format as the reference base.
+
+    The file name derives from the generated id, never from user input.
+    """
+    meta = {
+        "id": raw.identity.candidate_id,
+        "name": raw.identity.name,
+        "current_role": raw.current_role,
+        "source": raw.source,
+        **{k: v for k, v in raw.identity.contact.model_dump().items() if v},
+    }
+    path = directory / f"{raw.identity.candidate_id}.md"
+    front = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False)
+    path.write_text(f"---\n{front}---\n{raw.body}\n", encoding="utf-8")
+    return path
 
 
 def load_raw_candidates(directory: Path) -> list[RawCandidate]:
@@ -65,6 +90,7 @@ class CandidateRepository:
 
         self.pseudonymizer = Pseudonymizer({r.identity.candidate_id: r.identity.name for r in raw})
         self._identities = {r.identity.candidate_id: r.identity for r in raw}
+        self._sources = {r.identity.candidate_id: r.source for r in raw}
         self._profiles = {
             r.identity.candidate_id: CandidateProfile(
                 candidate_id=r.identity.candidate_id,
@@ -88,6 +114,12 @@ class CandidateRepository:
 
     def identity(self, candidate_id: str) -> CandidateIdentity:
         return self._identities[candidate_id]
+
+    def source(self, candidate_id: str) -> str:
+        return self._sources[candidate_id]
+
+    def __contains__(self, candidate_id: object) -> bool:
+        return candidate_id in self._identities
 
     def __len__(self) -> int:
         return len(self._profiles)

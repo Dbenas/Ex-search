@@ -85,6 +85,14 @@ marcas agora são neutralizadas no texto que o modelo lê; o sócio continua ven
 Um teste contrafactual opcional (`--empirical`, pede confirmação do custo) mede quanto essas
 marcas moveriam a nota sem a neutralização.
 
+**"Como coloco um currículo novo na base?"** Na página *Base de perfis*, o sócio envia um
+PDF ou TXT, ou cola o texto. Nome, e-mail, telefone e LinkedIn são separados em código, sem
+LLM: o nome sai da primeira linha e os contatos, de padrões. Os dados de identificação vão
+para o cadastro; o texto profissional passa pela mesma pseudonimização e indexação da base e
+entra na busca na hora. A tela mostra o que foi separado, quantos trechos foram indexados,
+quais marcas de gênero foram neutralizadas e o texto exatamente como o modelo vai ler.
+Currículos enviados podem ser removidos; a base de referência é protegida.
+
 **"Como levo isso para o comitê?"** Cada parecer vira um dossiê em PDF, em formato de
 memorando confidencial: mandato, leitura do shortlist, próximos passos, uma seção por
 candidato com as citações conferidas no currículo, cobertura dos requisitos, plano de busca
@@ -150,7 +158,7 @@ uv run curator bias-audit               # invariância a nome e gênero, sem cha
 **Qualidade**
 
 ```bash
-uv run pytest                 # 44 testes; o LLM é substituído por um fake determinístico
+uv run pytest                 # 51 testes; o LLM é substituído por um fake determinístico
 uv run ruff check . && uv run mypy src
 ```
 

@@ -38,6 +38,11 @@ def redact(text: str) -> RedactionResult:
     return RedactionResult(text=text, redactions=count)
 
 
+def find_all(label: str, text: str) -> list[str]:
+    """Occurrences of one PII pattern (EMAIL, URL, CPF, CNPJ, PHONE)."""
+    return [m.group(0) for m in _PATTERNS[label].finditer(text)]
+
+
 def alias_for(index: int) -> str:
     return f"CANDIDATO_{index:02d}"
 

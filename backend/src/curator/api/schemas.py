@@ -15,6 +15,7 @@ class CandidateSummary(BaseModel):
     name: str
     current_role: str
     profile_text: str
+    source: Literal["base", "upload"]
 
 
 class FeedbackRequest(BaseModel):

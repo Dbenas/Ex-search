@@ -1,18 +1,24 @@
 """Application service: wires the components and turns graph output into a report."""
 
+import asyncio
+import hashlib
+import re
 import time
+import unicodedata
 import uuid
 from collections.abc import AsyncGenerator, Callable
 from contextlib import aclosing, suppress
+from dataclasses import replace
 from typing import Any, cast
 
 import structlog
 
-from curator.agent.graph import CurationState, Dependencies, build_graph
+from curator.agent.graph import CurationState, Dependencies, build_graph, model_view
 from curator.agent.llm import StructuredLLM, build_llm
 from curator.agent.usage import UsageMeter, current_meter
 from curator.config import Settings
 from curator.domain.models import (
+    CandidateIdentity,
     CandidateNarrative,
     CandidateScores,
     MatchReport,
@@ -21,9 +27,13 @@ from curator.domain.models import (
     RunMetadata,
     ScoredCandidate,
     ScoreWeights,
+    UploadReport,
 )
-from curator.ingestion.loader import CandidateRepository
+from curator.ingestion.chunking import chunk_text
+from curator.ingestion.extraction import ExtractedCV
+from curator.ingestion.loader import CandidateRepository, RawCandidate, write_candidate_file
 from curator.ingestion.pipeline import ingest
+from curator.privacy.gender_signals import find_gender_signals
 from curator.retrieval.embeddings import Embedder
 from curator.retrieval.hybrid import HybridRetriever
 from curator.retrieval.vector_store import VectorStore
@@ -43,10 +53,89 @@ def _deep_map(value: Any, fn: Callable[[str], str]) -> Any:
     return value
 
 
+class CandidateError(ValueError):
+    """Invalid candidate operation (duplicate, missing name, protected record)."""
+
+
+def _slug(text: str) -> str:
+    ascii_text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", ascii_text.lower()).strip("-")[:30]
+
+
 class CurationService:
-    def __init__(self, deps: Dependencies) -> None:
+    def __init__(self, deps: Dependencies, store: VectorStore, embedder: Embedder) -> None:
         self._deps = deps
         self._graph = build_graph(deps)
+        self._store = store
+        self._embedder = embedder
+        self._base_lock = asyncio.Lock()
+
+    def _reload_base(self) -> None:
+        """Re-read the CV files, re-index incrementally and swap the graph."""
+        settings = self._deps.settings
+        repo = CandidateRepository.from_directory(settings.candidates_dir)
+        ingest(repo, self._store, self._embedder)
+        self._deps.retriever.refresh()
+        self._deps = replace(self._deps, repo=repo)
+        self._graph = build_graph(self._deps)
+
+    async def add_candidate(
+        self, cv: ExtractedCV, name: str | None = None, current_role: str | None = None
+    ) -> UploadReport:
+        final_name = (name or cv.name or "").strip()
+        if not final_name:
+            raise CandidateError("não foi possível identificar o nome; informe-o no formulário")
+        digest = hashlib.sha256(cv.body.encode()).hexdigest()[:6]
+        candidate_id = f"up-{_slug(final_name)}-{digest}"
+        raw = RawCandidate(
+            identity=CandidateIdentity(
+                candidate_id=candidate_id, name=final_name, contact=cv.contact
+            ),
+            current_role=(current_role or cv.current_role or "").strip(),
+            body=cv.body,
+            source="upload",
+        )
+        async with self._base_lock:
+            if candidate_id in self.repo:
+                raise CandidateError("este currículo já está na base")
+            path = write_candidate_file(self._deps.settings.candidates_dir, raw)
+            try:
+                await asyncio.to_thread(self._reload_base)
+            except Exception:
+                path.unlink(missing_ok=True)
+                raise
+
+        repo = self.repo
+        profile = repo.profile(candidate_id)
+        log.info(
+            "candidate.added",
+            candidate_id=candidate_id,
+            chunks=len(chunk_text(candidate_id, profile.summary)),
+        )
+        return UploadReport(
+            candidate_id=candidate_id,
+            name=final_name,
+            current_role=raw.current_role,
+            name_detected=name is None and cv.name is not None,
+            contacts_found=cv.contacts_found,
+            # Name + contacts split off by extraction, plus anything scrubbed from the body.
+            pii_removed=1
+            + len(cv.contacts_found)
+            + repo.pseudonymizer.anonymize(cv.body).redactions,
+            chunks_indexed=len(chunk_text(candidate_id, profile.summary)),
+            gender_cues=[g.term for g in find_gender_signals(profile.summary)],
+            indexed_text=model_view(profile.summary, self._deps.settings),
+        )
+
+    async def remove_candidate(self, candidate_id: str) -> None:
+        async with self._base_lock:
+            if candidate_id not in self.repo:
+                raise KeyError(candidate_id)
+            if self.repo.source(candidate_id) != "upload":
+                raise CandidateError("só currículos adicionados pela interface podem ser removidos")
+            (self._deps.settings.candidates_dir / f"{candidate_id}.md").unlink()
+            await asyncio.to_thread(self._reload_base)
+            log.info("candidate.removed", candidate_id=candidate_id)
 
     @property
     def repo(self) -> CandidateRepository:
@@ -268,5 +357,7 @@ def build_service(settings: Settings, llm: StructuredLLM | None = None) -> Curat
             llm=llm or build_llm(settings),
             repo=repo,
             retriever=retriever,
-        )
+        ),
+        store=store,
+        embedder=embedder,
     )

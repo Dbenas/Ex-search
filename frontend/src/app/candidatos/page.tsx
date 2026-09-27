@@ -1,3 +1,5 @@
+import { CandidateUpload } from "@/components/candidate-upload";
+import { RemoveCandidate } from "@/components/remove-candidate";
 import { backendJson } from "@/lib/backend";
 import type { CandidateSummary } from "@/lib/types";
 
@@ -14,6 +16,10 @@ export default async function CandidatesPage() {
         </p>
       </header>
 
+      <div className="mt-8">
+        <CandidateUpload />
+      </div>
+
       {candidates === null ? (
         <p className="mt-10 rounded-lg border border-rule bg-paper px-4 py-3 text-sm text-ink-soft">
           Não foi possível carregar a base. Verifique se a API está em execução.
@@ -22,8 +28,20 @@ export default async function CandidatesPage() {
         <ul className="mt-10 grid gap-4 md:grid-cols-2">
           {candidates.map((c) => (
             <li key={c.candidate_id} className="rounded-xl border border-rule bg-paper p-6">
-              <p className="font-display text-lg font-semibold tracking-[-0.015em]">{c.name}</p>
-              <p className="text-sm text-muted">{c.current_role}</p>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-display text-lg font-semibold tracking-[-0.015em]">{c.name}</p>
+                  <p className="text-sm text-muted">{c.current_role || "Cargo não informado"}</p>
+                </div>
+                {c.source === "upload" && (
+                  <div className="flex items-center gap-1">
+                    <span className="rounded bg-verdigris-wash px-2 py-0.5 text-[11px] text-verdigris">
+                      adicionado
+                    </span>
+                    <RemoveCandidate id={c.candidate_id} name={c.name} />
+                  </div>
+                )}
+              </div>
               <p className="mt-4 font-serif text-[15px] leading-[1.7] text-ink-soft">
                 {c.profile_text}
               </p>

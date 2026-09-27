@@ -259,6 +259,20 @@ class RequirementCoverage(BaseModel):
     covered_by: list[str]
 
 
+class UploadReport(BaseModel):
+    """What happened to a CV added through the interface, shown to the partner."""
+
+    candidate_id: str
+    name: str
+    current_role: str
+    name_detected: bool
+    contacts_found: list[str]
+    pii_removed: int
+    chunks_indexed: int
+    gender_cues: list[str]
+    indexed_text: str
+
+
 class RunMetadata(BaseModel):
     run_id: str
     model: str
