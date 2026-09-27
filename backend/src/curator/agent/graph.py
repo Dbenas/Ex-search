@@ -34,6 +34,7 @@ from curator.domain.models import (
     ShortlistEntry,
 )
 from curator.ingestion.loader import CandidateRepository
+from curator.privacy.gender_signals import to_unmarked
 from curator.retrieval.hybrid import HybridRetriever
 
 
@@ -79,6 +80,22 @@ def render_job_profile(job: JobProfile) -> str:
         f"Contexto: {job.company_context}\n"
         f"Requisitos técnicos:\n{reqs(job.hard_requirements)}\n"
         f"Requisitos comportamentais:\n{reqs(job.soft_requirements)}"
+    )
+
+
+def model_view(profile_text: str, s: Settings) -> str:
+    """The CV text as the model reads it. The partner still sees the original.
+
+    Quotes remain verifiable against the original: neutralising a cue changes a
+    single letter, well within the fuzzy-match threshold.
+    """
+    return to_unmarked(profile_text) if s.neutralize_gender_cues else profile_text
+
+
+def assessment_prompt(job: JobProfile, alias: str, profile_text: str) -> str:
+    """Exactly what the model receives for one candidate (also used by the bias audit)."""
+    return prompts.CANDIDATE_ASSESSMENT.format(
+        job_profile=render_job_profile(job), alias=alias, profile=profile_text
     )
 
 
@@ -154,10 +171,8 @@ def build_graph(deps: Dependencies) -> CompiledStateGraph[Any, Any, Any, Any]:
         profile = repo.profile(task["candidate_id"])
         assessment = await llm.generate(
             system=prompts.HOUSE_STYLE,
-            prompt=prompts.CANDIDATE_ASSESSMENT.format(
-                job_profile=render_job_profile(task["job_profile"]),
-                alias=profile.alias,
-                profile=profile.summary,
+            prompt=assessment_prompt(
+                task["job_profile"], profile.alias, model_view(profile.summary, settings)
             ),
             schema=CandidateAssessment,
             task="candidate_assessment",

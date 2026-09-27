@@ -57,6 +57,8 @@ class Settings(BaseSettings):
     weight_soft_skills: float = 0.30
     weight_context_fit: float = 0.30
     grounding_threshold: int = Field(default=85, ge=50, le=100)
+    # Rewrite feminine cues ("acostumada") to the unmarked form in what the model reads.
+    neutralize_gender_cues: bool = True
     # Generate a search plan when the leader scores below this or misses essentials.
     search_plan_enabled: bool = True
     search_plan_threshold: float = Field(default=80, ge=0, le=100)

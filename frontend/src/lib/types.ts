@@ -158,3 +158,19 @@ export type EvaluationReport = {
   };
   cases: EvaluationCase[];
 };
+
+export type BiasAudit = {
+  name_invariance: {
+    passed: boolean;
+    checks: { original_name: string; swapped_name: string; identical_prompt: boolean }[];
+  };
+  gender_invariance: {
+    passed: boolean;
+    checks: { alias: string; terms: string[]; identical_prompt: boolean }[];
+  };
+  counterfactual?: {
+    case: string;
+    repeats: number;
+    results: { alias: string; mean_delta: number; run_to_run_sd: number; verdict: string }[];
+  };
+};

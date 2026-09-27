@@ -75,6 +75,16 @@ arquétipos de perfil com seus trade-offs, segmentos de origem, buscas booleanas
 para o LinkedIn Recruiter e perguntas de triagem. É o elo entre a curadoria e o hunting
 ativo.
 
+**"O modelo favorece alguém por nome ou gênero?"** Em vez de só medir viés depois, o
+pipeline impede que essas informações cheguem ao modelo, e `curator bias-audit` prova isso
+sem gastar créditos: troca nome e contato de cada executivo por outro de gênero oposto e
+confere que o texto enviado ao modelo continua idêntico, byte a byte. A auditoria também
+achou um vazamento que a pseudonimização sozinha não resolve: em português o gênero aparece
+na concordância ("acostuma**da** a ambientes de alta pressão", no CV da Carolina). Essas
+marcas agora são neutralizadas no texto que o modelo lê; o sócio continua vendo o original.
+Um teste contrafactual opcional (`--empirical`, pede confirmação do custo) mede quanto essas
+marcas moveriam a nota sem a neutralização.
+
 ## Stack e por quê
 
 | Escolha | Motivo |
@@ -127,12 +137,13 @@ npm run dev                   # http://localhost:3000
 ```bash
 uv run curator match minha-vaga.txt     # roda o agente para uma vaga em arquivo
 uv run curator evaluate                 # vagas de teste + juiz; grava reports/evaluation-<modelo>.json
+uv run curator bias-audit               # invariância a nome e gênero, sem chamar o modelo
 ```
 
 **Qualidade**
 
 ```bash
-uv run pytest                 # 33 testes; o LLM é substituído por um fake determinístico
+uv run pytest                 # 44 testes; o LLM é substituído por um fake determinístico
 uv run ruff check . && uv run mypy src
 ```
 
@@ -142,6 +153,7 @@ uv run ruff check . && uv run mypy src
 |---|---|
 | Pseudonimização: o LLM e o índice vetorial nunca veem nome ou contato | `privacy/pseudonymizer.py`, `ingestion/loader.py` |
 | Teste que captura todos os prompts e verifica ausência de PII | `tests/test_agent.py::test_llm_never_sees_pii` |
+| Invariância a nome e gênero provada por comparação de prompts; marcas de gênero neutralizadas | `evaluation/bias.py`, `privacy/gender_signals.py`, `tests/test_bias.py` |
 | Redação de PII em logs e em comentários de feedback | `privacy/log_filter.py`, `api/app.py` |
 | API key com comparação em tempo constante, rate limit, CORS restrito, headers de segurança | `api/security.py`, `api/app.py` |
 | Chave da API só no servidor do Next.js; senha de acesso à demo com cookie HMAC `httpOnly` | `frontend/src/lib/backend.ts`, `frontend/src/proxy.ts` |

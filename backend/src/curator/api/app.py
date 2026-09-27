@@ -138,6 +138,13 @@ def create_app(
         paths = sorted(settings.eval_reports_dir.glob("evaluation-*.json"))
         return [json.loads(p.read_text(encoding="utf-8")) for p in paths]
 
+    @app.get("/v1/bias-audit")
+    def bias_audit(_: ApiKey) -> Any:
+        path = settings.eval_reports_dir / "bias-audit.json"
+        if not path.exists():
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "no bias audit yet")
+        return json.loads(path.read_text(encoding="utf-8"))
+
     @app.post("/v1/feedback", status_code=status.HTTP_204_NO_CONTENT)
     def feedback(body: FeedbackRequest, _: RateLimited) -> Response:
         record = body.model_dump()

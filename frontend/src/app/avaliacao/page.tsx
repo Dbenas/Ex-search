@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { backendJson } from "@/lib/backend";
-import type { EvaluationReport } from "@/lib/types";
+import type { BiasAudit, EvaluationReport } from "@/lib/types";
+import { BiasAuditView } from "@/components/bias-audit";
 
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 const num = (v: number | null | undefined, digits = 1) =>
@@ -83,7 +84,10 @@ function best(reports: EvaluationReport[], row: Row): number | null {
 }
 
 export default async function EvaluationPage() {
-  const reports = (await backendJson<EvaluationReport[]>("/v1/evaluation")) ?? [];
+  const [reports, audit] = await Promise.all([
+    backendJson<EvaluationReport[]>("/v1/evaluation").then((r) => r ?? []),
+    backendJson<BiasAudit>("/v1/bias-audit"),
+  ]);
   const judge = reports.find((r) => r.judge_model)?.judge_model;
 
   return (
@@ -152,6 +156,8 @@ export default async function EvaluationPage() {
               juiz variam cerca de 0,5 entre execuções.
             </p>
           </section>
+
+          {audit && <BiasAuditView audit={audit} />}
 
           {reports.map((report) => (
             <section key={report.model} className="mt-12">

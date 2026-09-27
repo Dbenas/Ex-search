@@ -31,6 +31,8 @@ jobs:
           key: embeddings-multilingual-e5-large
       # Tests use a fake LLM: no API key, no cost, deterministic.
       - run: uv run pytest -q
+      # Structural bias checks: no LLM calls, fails the build on regression.
+      - run: uv run curator bias-audit
 
   frontend:
     runs-on: ubuntu-latest

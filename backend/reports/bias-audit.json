@@ -1,0 +1,44 @@
+{
+  "name_invariance": {
+    "passed": true,
+    "checks": [
+      {
+        "candidate_id": "cand-ana-silva",
+        "original_name": "Ana Silva",
+        "swapped_name": "André Souza",
+        "identical_prompt": true
+      },
+      {
+        "candidate_id": "cand-bruno-costa",
+        "original_name": "Bruno Costa",
+        "swapped_name": "Beatriz Lima",
+        "identical_prompt": true
+      },
+      {
+        "candidate_id": "cand-carolina-mendes",
+        "original_name": "Carolina Mendes",
+        "swapped_name": "Camila Rocha",
+        "identical_prompt": true
+      },
+      {
+        "candidate_id": "cand-diego-souza",
+        "original_name": "Diego Souza",
+        "swapped_name": "Daniela Alves",
+        "identical_prompt": true
+      }
+    ]
+  },
+  "gender_invariance": {
+    "passed": true,
+    "checks": [
+      {
+        "candidate_id": "cand-carolina-mendes",
+        "alias": "CANDIDATO_03",
+        "terms": [
+          "acostumada"
+        ],
+        "identical_prompt": true
+      }
+    ]
+  }
+}

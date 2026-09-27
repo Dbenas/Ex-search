@@ -83,5 +83,102 @@ def evaluate(
         raise typer.Exit(code=1)
 
 
+@app.command("bias-audit")
+def bias_audit(
+    empirical: Annotated[
+        bool,
+        typer.Option(
+            help="Also measure, with the LLM and without neutralisation, how much the cues "
+            "would move scores. Costs credits; asks for confirmation."
+        ),
+    ] = False,
+    repeats: Annotated[int, typer.Option(min=2, max=10)] = 3,
+    case: Annotated[str, typer.Option(help="Job used for the empirical test.")] = "vaga-1-cto",
+    yes: Annotated[bool, typer.Option("--yes", help="Skip the cost confirmation.")] = False,
+) -> None:
+    """Check that names cannot influence scores and whether gender still leaks.
+
+    Without --empirical nothing is sent to the LLM and nothing is spent.
+    """
+    from curator.agent import prompts
+    from curator.agent.graph import default_weights
+    from curator.agent.llm import build_llm
+    from curator.domain.models import JobProfile
+    from curator.evaluation.bias import (
+        counterfactual_gender,
+        estimate_calls,
+        gender_invariance,
+        gender_leakage,
+        name_invariance,
+    )
+    from curator.evaluation.runner import load_cases, write_report
+    from curator.ingestion.loader import CandidateRepository, load_raw_candidates
+
+    s = get_settings()
+    raw = load_raw_candidates(s.candidates_dir)
+    repo = CandidateRepository(raw)
+    # The structural check compares prompts, so any mandate works.
+    placeholder = JobProfile(
+        role_title="-",
+        mandate="-",
+        company_context="-",
+        hard_requirements=[],
+        soft_requirements=[],
+        search_queries=[],
+    )
+    invariance = name_invariance(raw, placeholder, s)
+    gender = gender_invariance(repo, placeholder, s)
+    leakage = gender_leakage(repo)
+
+    def line(ok: bool, text: str) -> None:
+        typer.echo(f"[{'OK' if ok else 'FALHOU'}] {text}")
+
+    line(invariance["passed"], "Troca de nome e contato não altera o texto enviado ao modelo")
+    for c in invariance["checks"]:
+        typer.echo(f"      {c['original_name']} -> {c['swapped_name']}: {c['identical_prompt']}")
+    line(gender["passed"], "Marcas de gênero no CV não alteram o texto enviado ao modelo")
+    for c in gender["checks"] or [{"alias": "-", "terms": ["nenhuma marca encontrada"]}]:
+        status = "neutralizada" if c.get("identical_prompt") else "CHEGA AO MODELO"
+        typer.echo(f"      {c['alias']}: {', '.join(c['terms'])} ({status})")
+
+    report: dict[str, object] = {"name_invariance": invariance, "gender_invariance": gender}
+
+    if empirical and leakage:
+        llm = build_llm(s)
+        calls = estimate_calls(repo, repeats)
+        in_price, out_price = s.model_prices.get(llm.model, (0.0, 0.0))
+        # Typical assessment call: ~2.7k input and ~1.3k output tokens.
+        cost = calls * (2_700 * in_price + 1_300 * out_price) / 1_000_000
+        typer.echo(
+            f"\nTeste contrafactual: {calls} chamadas a {llm.model}, cerca de US$ {cost:.2f}."
+        )
+        if not yes and not typer.confirm("Continuar?"):
+            raise typer.Exit()
+        job_case = next(c for c in load_cases(s.eval_cases_path) if c["id"] == case)
+
+        async def run() -> list[dict[str, object]]:
+            job = await llm.generate(
+                system=prompts.HOUSE_STYLE,
+                prompt=prompts.JOB_ANALYSIS.format(job_description=job_case["description"]),
+                schema=JobProfile,
+                task="job_analysis",
+            )
+            return await counterfactual_gender(llm, repo, job, repeats, default_weights(s))
+
+        results = asyncio.run(run())
+        report["counterfactual"] = {"case": case, "repeats": repeats, "results": results}
+        for r in results:
+            typer.echo(
+                f"      {r['alias']}: como está {r['scores_as_is']} | sem marcas "
+                f"{r['scores_neutral']} | delta {r['mean_delta']} (ruído ±{r['run_to_run_sd']})"
+                f"\n      -> {r['verdict']}"
+            )
+
+    write_report(report, s.eval_reports_dir / "bias-audit.json")
+    typer.echo(f"\nrelatório: {s.eval_reports_dir / 'bias-audit.json'}")
+    if not (invariance["passed"] and gender["passed"]):
+        raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()

@@ -44,6 +44,13 @@ def parse_candidate_file(path: Path) -> RawCandidate:
     return RawCandidate(identity=identity, current_role=meta.get("current_role", ""), body=body)
 
 
+def load_raw_candidates(directory: Path) -> list[RawCandidate]:
+    files = sorted(directory.glob("*.md"))
+    if not files:
+        raise CandidateFileError(f"no candidate files found in {directory}")
+    return [parse_candidate_file(f) for f in files]
+
+
 class CandidateRepository:
     """In-memory view of the candidate base.
 
@@ -70,10 +77,7 @@ class CandidateRepository:
 
     @classmethod
     def from_directory(cls, directory: Path) -> "CandidateRepository":
-        files = sorted(directory.glob("*.md"))
-        if not files:
-            raise CandidateFileError(f"no candidate files found in {directory}")
-        return cls([parse_candidate_file(f) for f in files])
+        return cls(load_raw_candidates(directory))
 
     @property
     def profiles(self) -> list[CandidateProfile]:

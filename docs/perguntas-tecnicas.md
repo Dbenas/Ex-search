@@ -106,6 +106,19 @@ MBA em Stanford" pode identificar alguém mesmo sem o nome. Removê-los destruir
 match. Por isso a proteção vem do perímetro, dos termos do Vertex (dados não treinam
 modelos) e do controle de acesso, não só da anonimização.
 
+### Viés
+
+A pseudonimização também é o principal controle de viés: se o modelo não vê o nome, a nota
+não pode depender dele. Isso não é pressuposto, é testado: `curator bias-audit` troca nome e
+contato por outros de gênero oposto e compara o prompt resultante, byte a byte. Ele revelou
+um limite real: em português a concordância entrega o gênero ("acostumada"). A correção foi
+neutralizar essas formas no texto que o modelo lê, e o mesmo teste passou a cobri-las.
+
+Os limites continuam existindo. A lista de marcas é heurística, e outros sinais indiretos
+(instituições, trajetória) podem correlacionar com gênero ou origem. Para isso existe o teste
+contrafactual empírico e, em produção, o acompanhamento da taxa de indicação por grupo
+demográfico, com dados declarados voluntariamente e nunca enviados ao modelo.
+
 ## 6. Como vender para um sócio 100% manual e intuitivo
 
 - **Posicionar como analista, não como substituto.** O agente faz o trabalho de primeira
