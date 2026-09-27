@@ -63,3 +63,11 @@ async def test_stream_emits_every_stage_then_report(service: CurationService) ->
     assert stages[:3] == ["sanitize", "analyze_job", "retrieve"]
     assert stages.count("assess") == 4
     assert stages[-2:] == ["rank", "synthesize"]
+
+
+async def test_run_reports_token_usage_and_cost(service: CurationService) -> None:
+    report = await service.run(CTO_JOB)
+    meta = report.metadata
+    # 6 calls x (1000 in, 200 out) recorded by the fake model.
+    assert (meta.input_tokens, meta.output_tokens) == (6_000, 1_200)
+    assert meta.cost_usd == round((6_000 * 1.0 + 1_200 * 5.0) / 1_000_000, 4)

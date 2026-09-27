@@ -193,6 +193,9 @@ class RunMetadata(BaseModel):
     candidates_screened: int
     pii_redactions: int
     llm_calls: int
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cost_usd: float | None = None
 
 
 class MatchReport(BaseModel):

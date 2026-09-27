@@ -1,8 +1,8 @@
-"""Structured-output client for Claude.
+"""LLM clients with structured output.
 
-Every call returns a validated Pydantic object (``messages.parse``), so the
-graph never parses free text. Local development uses the first-party API;
-production points to the same model on Vertex AI, inside the GCP perimeter.
+Every call returns a validated Pydantic object, so the graph never parses free
+text. ``build_llm`` picks the provider; the graph only knows ``StructuredLLM``.
+Claude runs on the first-party API locally and on Vertex AI in production.
 """
 
 import time
@@ -13,6 +13,7 @@ import anthropic
 import structlog
 from pydantic import BaseModel
 
+from curator.agent.usage import record_usage
 from curator.config import Settings
 
 log = structlog.get_logger(__name__)
@@ -38,7 +39,7 @@ class ClaudeClient:
         self._effort = settings.llm_effort
         self._max_tokens = settings.llm_max_tokens
         self._settings = settings
-        self._fallback = settings.llm_refusal_fallback and settings.llm_provider == "anthropic"
+        self._fallback = settings.llm_refusal_fallback and settings.llm_provider != "vertex"
 
     @cached_property
     def _client(self) -> Any:
@@ -86,6 +87,7 @@ class ClaudeClient:
         except anthropic.APIConnectionError as exc:
             raise LLMError("could not reach the LLM provider") from exc
 
+        record_usage(self.model, response.usage.input_tokens, response.usage.output_tokens)
         log.info(
             "llm.call",
             task=task,
@@ -105,3 +107,12 @@ class ClaudeClient:
         if parsed is None:
             raise LLMError(f"{task} returned no structured output")
         return parsed  # type: ignore[no-any-return]
+
+
+def build_llm(settings: Settings, provider: str | None = None) -> StructuredLLM:
+    """Client for ``provider`` (defaults to ``LLM_PROVIDER``)."""
+    if (provider or settings.llm_provider) == "gemini":
+        from curator.agent.gemini import GeminiClient
+
+        return GeminiClient(settings)
+    return ClaudeClient(settings)

@@ -133,11 +133,10 @@ def create_app(
         return EventSourceResponse(events(), ping=15)
 
     @app.get("/v1/evaluation")
-    def evaluation(_: ApiKey) -> Any:
-        path = settings.eval_report_path
-        if not path.exists():
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "no evaluation report yet")
-        return json.loads(path.read_text(encoding="utf-8"))
+    def evaluation(_: ApiKey) -> list[Any]:
+        """One report per evaluated model, for side-by-side comparison."""
+        paths = sorted(settings.eval_reports_dir.glob("evaluation-*.json"))
+        return [json.loads(p.read_text(encoding="utf-8")) for p in paths]
 
     @app.post("/v1/feedback", status_code=status.HTTP_204_NO_CONTENT)
     def feedback(body: FeedbackRequest, _: RateLimited) -> Response:

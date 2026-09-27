@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
 
     # LLM
-    llm_provider: Literal["anthropic", "vertex"] = "anthropic"
+    llm_provider: Literal["anthropic", "vertex", "gemini"] = "anthropic"
     anthropic_api_key: SecretStr | None = None
     llm_model: str = "claude-opus-5"
     llm_effort: Literal["low", "medium", "high", "xhigh", "max"] = "medium"
@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     llm_refusal_fallback: bool = True
     gcp_project_id: str | None = None
     gcp_region: str = "global"
+    gemini_api_key: SecretStr | None = None
+    gemini_model: str = "gemini-pro-latest"
+    gemini_use_vertex: bool = False
+    # List prices in USD per million tokens (input, output), for cost estimates.
+    model_prices: dict[str, tuple[float, float]] = Field(
+        default_factory=lambda: {"claude-opus-5": (5.0, 25.0)}
+    )
 
     # Retrieval
     embedding_model: str = "intfloat/multilingual-e5-large"
@@ -34,7 +41,7 @@ class Settings(BaseSettings):
     collection_name: str = "executive_profiles"
     candidates_dir: Path = BACKEND_ROOT / "data" / "candidates"
     eval_cases_path: Path = BACKEND_ROOT / "data" / "eval" / "jobs.yaml"
-    eval_report_path: Path = BACKEND_ROOT / "reports" / "evaluation.json"
+    eval_reports_dir: Path = BACKEND_ROOT / "reports"
     feedback_path: Path = BACKEND_ROOT / ".runtime" / "feedback.jsonl"
     shortlist_size: int = Field(default=6, ge=3, le=20)
     top_k: int = Field(default=3, ge=1, le=5)

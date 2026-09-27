@@ -114,11 +114,18 @@ async def evaluate(
         )
 
     judged = [r.judge for r in results if r.judge]
+    meta = [r.report.metadata for r in results]
+    costs = [m.cost_usd for m in meta if m.cost_usd is not None]
     return {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "model": service.model,
+        "judge_model": judge.model if judge else None,
         "summary": {
             "cases": len(results),
+            "avg_elapsed_s": round(mean(m.elapsed_ms for m in meta) / 1000, 1),
+            "avg_input_tokens": round(mean(m.input_tokens for m in meta)),
+            "avg_output_tokens": round(mean(m.output_tokens for m in meta)),
+            "avg_cost_usd": round(mean(costs), 4) if len(costs) == len(meta) else None,
             "hit_at_1": round(mean(r.hit_at_1 for r in results), 3),
             "mrr": round(mean(r.reciprocal_rank for r in results), 3),
             "grounding_rate": round(mean(r.grounding_rate for r in results), 3),

@@ -95,7 +95,11 @@ export function MatchReportView({ report }: { report: MatchReport }) {
       <footer className="flex flex-wrap gap-x-6 gap-y-1 px-1 font-mono text-[11px] text-muted">
         <span>modelo {metadata.model}</span>
         <span>{metadata.candidates_screened} perfis na base</span>
-        <span>{metadata.llm_calls} chamadas ao modelo</span>
+        <span>
+          {metadata.llm_calls} chamadas ao modelo ·{" "}
+          {(metadata.input_tokens + metadata.output_tokens).toLocaleString("pt-BR")} tokens
+          {metadata.cost_usd !== null && ` · US$ ${metadata.cost_usd.toFixed(2)}`}
+        </span>
         <span>{metadata.pii_redactions} dado(s) pessoal(is) removido(s) da vaga</span>
         <span>{(metadata.elapsed_ms / 1000).toFixed(1)}s</span>
         <span>execução {metadata.run_id}</span>

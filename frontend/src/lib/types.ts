@@ -56,6 +56,9 @@ export type MatchReport = {
     candidates_screened: number;
     pii_redactions: number;
     llm_calls: number;
+    input_tokens: number;
+    output_tokens: number;
+    cost_usd: number | null;
   };
 };
 
@@ -100,8 +103,13 @@ export type EvaluationCase = {
 export type EvaluationReport = {
   generated_at: string;
   model: string;
+  judge_model: string | null;
   summary: {
     cases: number;
+    avg_elapsed_s: number;
+    avg_input_tokens: number;
+    avg_output_tokens: number;
+    avg_cost_usd: number | null;
     hit_at_1: number;
     mrr: number;
     grounding_rate: number;

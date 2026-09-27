@@ -55,19 +55,25 @@ def match(
 
 @app.command()
 def evaluate(
+    provider: Annotated[
+        str | None, typer.Option(help="anthropic or gemini (defaults to LLM_PROVIDER).")
+    ] = None,
     skip_judge: Annotated[bool, typer.Option(help="Skip the LLM-as-judge step.")] = False,
 ) -> None:
-    """Run the reference job descriptions and write reports/evaluation.json."""
-    from curator.agent.llm import ClaudeClient
+    """Run the reference job descriptions and write reports/evaluation-<model>.json.
+
+    The judge is always Claude, so reports from different providers are comparable.
+    """
+    from curator.agent.llm import ClaudeClient, build_llm
     from curator.evaluation.runner import evaluate as run_eval
     from curator.evaluation.runner import load_cases, write_report
     from curator.service import build_service
 
     s = get_settings()
-    service = build_service(s)
+    service = build_service(s, llm=build_llm(s, provider))
     judge = None if skip_judge else ClaudeClient(s)
     result = asyncio.run(run_eval(service, load_cases(s.eval_cases_path), judge))
-    write_report(result, s.eval_report_path)
+    write_report(result, s.eval_reports_dir / f"evaluation-{service.model}.json")
 
     for case in result["cases"]:
         mark = "OK " if case["hit_at_1"] else "MISS"

@@ -5,6 +5,7 @@ from typing import Any, TypeVar
 import pytest
 from pydantic import BaseModel
 
+from curator.agent.usage import record_usage
 from curator.config import BACKEND_ROOT, Settings
 from curator.domain.models import (
     CandidateAssessment,
@@ -39,6 +40,7 @@ class FakeLLM:
 
     async def generate(self, *, system: str, prompt: str, schema: type[T], task: str) -> T:
         self.prompts.append(system + "\n" + prompt)
+        record_usage(self.model, 1_000, 200)
         return schema.model_validate(self._answer(prompt, schema))
 
     def _answer(self, prompt: str, schema: type[BaseModel]) -> Any:
@@ -95,8 +97,9 @@ def settings(tmp_path_factory: pytest.TempPathFactory) -> Settings:
         anthropic_api_key=None,
         chroma_dir=tmp / "chroma",
         embedding_cache_dir=BACKEND_ROOT / ".models",
-        eval_report_path=tmp / "evaluation.json",
+        eval_reports_dir=tmp / "reports",
         feedback_path=tmp / "feedback.jsonl",
+        model_prices={"fake-model": (1.0, 5.0)},
     )
 
 

@@ -3,13 +3,14 @@
 import time
 import uuid
 from collections.abc import AsyncGenerator
-from contextlib import aclosing
+from contextlib import aclosing, suppress
 from typing import Any, cast
 
 import structlog
 
 from curator.agent.graph import CurationState, Dependencies, build_graph
-from curator.agent.llm import ClaudeClient, StructuredLLM
+from curator.agent.llm import StructuredLLM, build_llm
+from curator.agent.usage import UsageMeter, current_meter
 from curator.config import Settings
 from curator.domain.models import (
     CandidateNarrative,
@@ -47,6 +48,8 @@ class CurationService:
         run_id = uuid.uuid4().hex[:12]
         started = time.perf_counter()
         state: CurationState = {"job_description": job_description, "llm_calls": 0}
+        meter = UsageMeter()
+        meter_token = current_meter.set(meter)
         structlog.contextvars.bind_contextvars(run_id=run_id)
         try:
             stream = self._graph.astream(state, stream_mode=["updates", "values"])
@@ -59,11 +62,14 @@ class CurationService:
                         yield {"type": "stage", "stage": node, **self._describe(node, delta)}
 
             elapsed_ms = int((time.perf_counter() - started) * 1000)
-            report = self._build_report(state, run_id, elapsed_ms)
+            report = self._build_report(state, run_id, elapsed_ms, meter)
             log.info("curation.completed", elapsed_ms=elapsed_ms, llm_calls=state["llm_calls"])
             yield {"type": "report", "report": report.model_dump(mode="json")}
         finally:
             structlog.contextvars.unbind_contextvars("run_id")
+            # The generator may be finalised from another context (e.g. client disconnect).
+            with suppress(ValueError):
+                current_meter.reset(meter_token)
 
     async def run(self, job_description: str) -> MatchReport:
         async with aclosing(self.stream(job_description)) as events:
@@ -120,7 +126,9 @@ class CurationService:
                 return {"message": "Parecer consultivo redigido", "data": {}}
         return {"message": node, "data": {}}
 
-    def _build_report(self, state: CurationState, run_id: str, elapsed_ms: int) -> MatchReport:
+    def _build_report(
+        self, state: CurationState, run_id: str, elapsed_ms: int, meter: UsageMeter
+    ) -> MatchReport:
         settings, repo = self._deps.settings, self._deps.repo
         pseudo = repo.pseudonymizer
         narratives = {n.alias: n for n in state["narrative"].candidates}
@@ -152,6 +160,9 @@ class CurationService:
                 candidates_screened=self._deps.retriever.candidate_count,
                 pii_redactions=state.get("redactions", 0),
                 llm_calls=state.get("llm_calls", 0),
+                input_tokens=meter.input_tokens,
+                output_tokens=meter.output_tokens,
+                cost_usd=meter.cost_usd(settings.model_prices, self._deps.llm.model),
             ),
         )
 
@@ -203,7 +214,7 @@ def build_service(settings: Settings, llm: StructuredLLM | None = None) -> Curat
     return CurationService(
         Dependencies(
             settings=settings,
-            llm=llm or ClaudeClient(settings),
+            llm=llm or build_llm(settings),
             repo=repo,
             retriever=retriever,
         )
