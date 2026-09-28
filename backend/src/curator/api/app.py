@@ -30,12 +30,13 @@ from curator.api.schemas import (
     MatchRequest,
 )
 from curator.api.security import RateLimiter, client_key, require_api_key
+from curator.candidates import CandidateError
 from curator.config import Settings, get_settings
 from curator.domain.models import MatchReport, UploadReport
 from curator.ingestion.extraction import MAX_TEXT_CHARS, ExtractionError, extract_cv, extract_pdf
 from curator.logging import configure_logging
 from curator.privacy.pseudonymizer import redact
-from curator.service import CandidateError, CurationService, build_service
+from curator.service import CurationService, build_service
 
 log = structlog.get_logger(__name__)
 
