@@ -32,7 +32,7 @@ from curator.api.schemas import (
 from curator.api.security import RateLimiter, client_key, require_api_key
 from curator.config import Settings, get_settings
 from curator.domain.models import MatchReport, UploadReport
-from curator.ingestion.extraction import MAX_TEXT_CHARS, ExtractionError, extract_cv, pdf_to_text
+from curator.ingestion.extraction import MAX_TEXT_CHARS, ExtractionError, extract_cv, extract_pdf
 from curator.logging import configure_logging
 from curator.privacy.pseudonymizer import redact
 from curator.service import CandidateError, CurationService, build_service
@@ -136,14 +136,13 @@ def create_app(
                     raise ExtractionError("o arquivo excede 2 MB")
                 suffix = (file.filename or "").lower().rsplit(".", 1)[-1]
                 if suffix == "pdf":
-                    raw_text = await asyncio.to_thread(pdf_to_text, data)
+                    cv = await asyncio.to_thread(extract_pdf, data)
                 elif suffix in ("txt", "md"):
-                    raw_text = data.decode("utf-8", errors="replace")
+                    cv = extract_cv(data.decode("utf-8", errors="replace"))
                 else:
                     raise ExtractionError("formato não suportado; use PDF ou TXT")
             else:
-                raw_text = text or ""
-            cv = extract_cv(raw_text)
+                cv = extract_cv(text or "")
             return await svc.add_candidate(cv, name=name or None, current_role=current_role or None)
         except (ExtractionError, CandidateError) as exc:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc

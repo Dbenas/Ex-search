@@ -126,6 +126,10 @@ export function CandidateUpload() {
               <FileUp className="size-5 text-muted" aria-hidden />
               <p className="mt-2 text-sm">{file ? file.name : "Arraste o arquivo ou clique para escolher"}</p>
               <p className="mt-0.5 text-xs text-muted">PDF com texto selecionável ou TXT, até 2 MB</p>
+              <p className="mt-3 max-w-xs text-xs leading-relaxed text-ink-soft">
+                Perfil do LinkedIn: no perfil, clique em <strong>Mais</strong> e depois em{" "}
+                <strong>Salvar em PDF</strong>. O formato é reconhecido automaticamente.
+              </p>
               <input
                 ref={input}
                 type="file"
@@ -213,6 +217,8 @@ function UploadResult({ result }: { result: UploadReport }) {
         ))}
       </dl>
       <p className="text-xs leading-relaxed text-ink-soft">
+        {result.source_format === "linkedin" &&
+          "Exportação do LinkedIn reconhecida: resumo, experiências, formação e competências organizados. "}
         {result.name_detected ? "Nome detectado no documento. " : "Nome informado no formulário. "}
         {result.contacts_found.length
           ? `Encontrado(s): ${result.contacts_found.join(", ")}. Ficam no cadastro, fora do índice e fora do modelo.`

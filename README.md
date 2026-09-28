@@ -91,7 +91,13 @@ LLM: o nome sai da primeira linha e os contatos, de padrões. Os dados de identi
 para o cadastro; o texto profissional passa pela mesma pseudonimização e indexação da base e
 entra na busca na hora. A tela mostra o que foi separado, quantos trechos foram indexados,
 quais marcas de gênero foram neutralizadas e o texto exatamente como o modelo vai ler.
-Currículos enviados podem ser removidos; a base de referência é protegida.
+Currículos enviados podem ser removidos; a base de referência é protegida. Perfis do LinkedIn
+entram pela exportação oficial (*Mais > Salvar em PDF*): o formato é reconhecido pela
+tipografia e resumo, experiências, formação e competências são organizados automaticamente.
+Não lemos perfis a partir do link, por decisão: coleta automática viola os termos do
+LinkedIn e captaria dados de executivos sem o conhecimento deles, o que não se sustenta
+diante da LGPD. Em produção, o caminho oficial é a integração do LinkedIn Recruiter com o
+ATS da consultoria.
 
 **"Como levo isso para o comitê?"** Cada parecer vira um dossiê em PDF, em formato de
 memorando confidencial: mandato, leitura do shortlist, próximos passos, uma seção por

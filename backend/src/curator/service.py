@@ -117,6 +117,7 @@ class CurationService:
             name=final_name,
             current_role=raw.current_role,
             name_detected=name is None and cv.name is not None,
+            source_format=cv.source_format,
             contacts_found=cv.contacts_found,
             # Name + contacts split off by extraction, plus anything scrubbed from the body.
             pii_removed=1

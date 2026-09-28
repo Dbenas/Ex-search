@@ -8,12 +8,13 @@ override the detected name and role.
 
 import io
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
 
 from curator.domain.models import ContactInfo
+from curator.ingestion.linkedin import is_linkedin_export, parse_linkedin_pdf
 from curator.privacy.pseudonymizer import find_all
 
 MAX_PDF_PAGES = 10
@@ -34,6 +35,8 @@ class ExtractedCV:
     contact: ContactInfo
     body: str
     contacts_found: list[str] = field(default_factory=list)
+    # "linkedin" when the file is a LinkedIn profile export, else "pdf" or "text".
+    source_format: str = "text"
 
 
 def pdf_to_text(data: bytes) -> str:
@@ -123,3 +126,20 @@ def extract_cv(raw: str) -> ExtractedCV:
         body=body,
         contacts_found=contacts_found,
     )
+
+
+def extract_pdf(data: bytes) -> ExtractedCV:
+    """Route LinkedIn profile exports to the dedicated reader; other PDFs to the generic one."""
+    text = pdf_to_text(data)
+    if is_linkedin_export(text):
+        profile = parse_linkedin_pdf(data)
+        if len(profile.body) >= 80:
+            return ExtractedCV(
+                name=profile.name,
+                current_role=profile.headline,
+                contact=profile.contact,
+                body=profile.body,
+                contacts_found=profile.contacts_found,
+                source_format="linkedin",
+            )
+    return replace(extract_cv(text), source_format="pdf")

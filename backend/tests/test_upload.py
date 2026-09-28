@@ -5,6 +5,7 @@ from curator.api.app import create_app
 from curator.config import Settings
 from curator.ingestion.extraction import ExtractionError, extract_cv, pdf_to_text
 from curator.service import CurationService
+from tests.pdf_helpers import LINKEDIN_PROFILE, make_pdf
 
 pytestmark = pytest.mark.slow
 
@@ -16,34 +17,6 @@ Lidera a área de dados e IA de um marketplace com 40 milhões de clientes. Cons
 a plataforma de machine learning e o time de 35 cientistas e engenheiros de dados. Perfil
 hands-on, programa em Python, acostumada a ambientes de crescimento acelerado.
 Estatística (USP) e mestrado em Ciência da Computação."""
-
-
-def make_pdf(lines: list[str]) -> bytes:
-    """Minimal single-page PDF with Helvetica text, enough for text extraction."""
-    ops = ["BT /F1 11 Tf 50 780 Td 14 TL"]
-    for line in lines:
-        escaped = line.replace("\\\\", "\\\\\\\\").replace("(", "\\(").replace(")", "\\)")
-        ops.append(f"({escaped}) Tj T*")
-    ops.append("ET")
-    stream = "\n".join(ops).encode("latin-1")
-    objects = [
-        b"<< /Type /Catalog /Pages 2 0 R >>",
-        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] "
-        b"/Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
-        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
-        b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream",
-    ]
-    out = bytearray(b"%PDF-1.4\n")
-    offsets = []
-    for i, body in enumerate(objects, start=1):
-        offsets.append(len(out))
-        out += f"{i} 0 obj\n".encode() + body + b"\nendobj\n"
-    xref = len(out)
-    out += f"xref\n0 {len(objects) + 1}\n0000000000 65535 f \n".encode()
-    out += b"".join(f"{o:010d} 00000 n \n".encode() for o in offsets)
-    out += f"trailer << /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF".encode()
-    return bytes(out)
 
 
 def test_extracts_identity_and_keeps_professional_text() -> None:
@@ -131,3 +104,21 @@ def test_upload_requires_exactly_one_source(client: TestClient) -> None:
             "/v1/candidates", files={"file": ("cv.exe", b"MZ", "application/x-msdownload")}
         )
         assert bad.status_code == 422
+
+
+def test_upload_linkedin_export(client: TestClient) -> None:
+    with client:
+        response = client.post(
+            "/v1/candidates",
+            files={"file": ("Profile.pdf", make_pdf(LINKEDIN_PROFILE), "application/pdf")},
+        )
+        assert response.status_code == 201, response.text
+        body = response.json()
+        assert body["source_format"] == "linkedin"
+        assert body["name"] == "Joana Prado" and body["name_detected"]
+        assert body["current_role"] == "CFO | Tecnologia | Captação e M&A"
+        assert body["contacts_found"] == ["e-mail", "LinkedIn"]
+        assert "Joana" not in body["indexed_text"]
+        # "Executiva", "Diretora" are neutralised in what the model reads.
+        assert set(body["gender_cues"]) >= {"Executiva", "Diretora"}
+        client.delete(f"/v1/candidates/{body['candidate_id']}")

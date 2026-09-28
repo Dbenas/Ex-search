@@ -128,6 +128,7 @@ export type UploadReport = {
   name: string;
   current_role: string;
   name_detected: boolean;
+  source_format: "linkedin" | "pdf" | "text";
   contacts_found: string[];
   pii_removed: number;
   chunks_indexed: number;

@@ -266,6 +266,7 @@ class UploadReport(BaseModel):
     name: str
     current_role: str
     name_detected: bool
+    source_format: str
     contacts_found: list[str]
     pii_removed: int
     chunks_indexed: int

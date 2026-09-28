@@ -101,6 +101,12 @@ Em produção:
 - Política de retenção alinhada à LGPD, com base legal e direito de exclusão: apagar do
   Cloud SQL invalida o pseudônimo.
 
+**Origem dos dados também é privacidade.** Importar perfis do LinkedIn a partir do link seria
+cômodo, mas a coleta automática viola os termos da plataforma e trata dados de executivos
+sem base legal clara. O protótipo aceita a exportação oficial em PDF, feita pelo sócio com o
+próprio acesso; em produção, a via é a integração do LinkedIn Recruiter com o ATS e o
+consentimento do candidato registrado no cadastro.
+
 Um ponto a discutir: **quase-identificadores**. "Ex-CFO de fintech unicórnio, Poli-USP e
 MBA em Stanford" pode identificar alguém mesmo sem o nome. Removê-los destruiria o sinal de
 match. Por isso a proteção vem do perímetro, dos termos do Vertex (dados não treinam
