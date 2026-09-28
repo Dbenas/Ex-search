@@ -13,11 +13,17 @@ def _fingerprint(chunk: Chunk, model_name: str) -> str:
 
 
 class VectorStore:
-    """Thin wrapper over a persistent Chroma collection (cosine space)."""
+    """Thin wrapper over a Chroma collection (cosine space).
 
-    def __init__(self, path: Path, collection: str, embedding_model: str) -> None:
-        self._client = chromadb.PersistentClient(
-            path=str(path), settings=ChromaSettings(anonymized_telemetry=False)
+    ``path=None`` keeps the index in memory, used by throw-away evaluation runs.
+    """
+
+    def __init__(self, path: Path | None, collection: str, embedding_model: str) -> None:
+        settings = ChromaSettings(anonymized_telemetry=False)
+        self._client = (
+            chromadb.PersistentClient(path=str(path), settings=settings)
+            if path is not None
+            else chromadb.EphemeralClient(settings=settings)
         )
         self._model = embedding_model
         self._collection = self._client.get_or_create_collection(

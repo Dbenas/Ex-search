@@ -33,6 +33,7 @@ jobs:
       - run: uv run pytest -q
       # Structural bias checks: no LLM calls, fails the build on regression.
       - run: uv run curator bias-audit
+      - run: uv run curator retrieval-eval
 
   frontend:
     runs-on: ubuntu-latest

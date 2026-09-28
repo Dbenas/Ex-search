@@ -1,0 +1,305 @@
+{
+  "generated_at": "2026-09-28T13:53:16+00:00",
+  "embedding_model": "intfloat/multilingual-e5-large",
+  "profiles_indexed": 20,
+  "queries": 10,
+  "summary": {
+    "denso": {
+      "hit_at_1": 0.8,
+      "recall_at_3": 1,
+      "mrr": 0.9
+    },
+    "lexical": {
+      "hit_at_1": 0.6,
+      "recall_at_3": 0.7,
+      "mrr": 0.633
+    },
+    "hibrido": {
+      "hit_at_1": 0.6,
+      "recall_at_3": 0.7,
+      "mrr": 0.688
+    }
+  },
+  "rows": [
+    {
+      "expected": "cand-carolina-mendes",
+      "kind": "reference",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-carolina-mendes",
+          "cand-ana-silva",
+          "dx-vp-sales"
+        ]
+      },
+      "lexical": {
+        "position": 1,
+        "top": [
+          "cand-carolina-mendes",
+          "dx-vp-sales",
+          "dx-head-data-bank"
+        ]
+      },
+      "hibrido": {
+        "position": 1,
+        "top": [
+          "cand-carolina-mendes",
+          "dx-vp-sales",
+          "cand-ana-silva"
+        ]
+      }
+    },
+    {
+      "expected": "cand-carolina-mendes",
+      "kind": "semantic",
+      "denso": {
+        "position": 2,
+        "top": [
+          "dx-product-director",
+          "cand-carolina-mendes",
+          "dx-ai-researcher"
+        ]
+      },
+      "lexical": {
+        "position": null,
+        "top": [
+          "dx-engineering-manager",
+          "dx-ai-researcher",
+          "dx-cto-ecommerce"
+        ]
+      },
+      "hibrido": {
+        "position": 10,
+        "top": [
+          "dx-ai-researcher",
+          "cand-bruno-costa",
+          "dx-cto-ecommerce"
+        ]
+      }
+    },
+    {
+      "expected": "cand-carolina-mendes",
+      "kind": "trap",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-carolina-mendes",
+          "dx-transformation-consultant",
+          "dx-cto-ecommerce"
+        ]
+      },
+      "lexical": {
+        "position": 1,
+        "top": [
+          "cand-carolina-mendes",
+          "dx-engineering-manager",
+          "dx-cto-ecommerce"
+        ]
+      },
+      "hibrido": {
+        "position": 1,
+        "top": [
+          "cand-carolina-mendes",
+          "dx-cto-ecommerce",
+          "dx-product-director"
+        ]
+      }
+    },
+    {
+      "expected": "cand-ana-silva",
+      "kind": "reference",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-ana-silva",
+          "dx-transformation-consultant",
+          "dx-cfo-agro"
+        ]
+      },
+      "lexical": {
+        "position": 3,
+        "top": [
+          "dx-engineering-manager",
+          "dx-cfo-agro",
+          "cand-ana-silva"
+        ]
+      },
+      "hibrido": {
+        "position": 1,
+        "top": [
+          "cand-ana-silva",
+          "dx-cfo-agro",
+          "dx-ceo-startup"
+        ]
+      }
+    },
+    {
+      "expected": "cand-ana-silva",
+      "kind": "semantic",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-ana-silva",
+          "dx-cfo-retail",
+          "dx-investment-banker"
+        ]
+      },
+      "lexical": {
+        "position": null,
+        "top": [
+          "dx-cfo-retail",
+          "dx-investment-banker",
+          "dx-ceo-startup"
+        ]
+      },
+      "hibrido": {
+        "position": 5,
+        "top": [
+          "dx-cfo-retail",
+          "dx-investment-banker",
+          "dx-ceo-startup"
+        ]
+      }
+    },
+    {
+      "expected": "cand-ana-silva",
+      "kind": "trap",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-ana-silva",
+          "dx-ceo-startup",
+          "dx-cfo-agro"
+        ]
+      },
+      "lexical": {
+        "position": 1,
+        "top": [
+          "cand-ana-silva",
+          "dx-ceo-startup",
+          "dx-cfo-healthcare"
+        ]
+      },
+      "hibrido": {
+        "position": 1,
+        "top": [
+          "cand-ana-silva",
+          "dx-ceo-startup",
+          "dx-cfo-healthcare"
+        ]
+      }
+    },
+    {
+      "expected": "cand-bruno-costa",
+      "kind": "reference",
+      "denso": {
+        "position": 2,
+        "top": [
+          "dx-transformation-consultant",
+          "cand-bruno-costa",
+          "dx-cio-insurance"
+        ]
+      },
+      "lexical": {
+        "position": 1,
+        "top": [
+          "cand-bruno-costa",
+          "dx-transformation-consultant",
+          "dx-cio-insurance"
+        ]
+      },
+      "hibrido": {
+        "position": 2,
+        "top": [
+          "dx-transformation-consultant",
+          "cand-bruno-costa",
+          "dx-cio-insurance"
+        ]
+      }
+    },
+    {
+      "expected": "cand-bruno-costa",
+      "kind": "semantic",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-bruno-costa",
+          "dx-transformation-consultant",
+          "dx-cio-insurance"
+        ]
+      },
+      "lexical": {
+        "position": 1,
+        "top": [
+          "cand-bruno-costa",
+          "cand-ana-silva",
+          "cand-diego-souza"
+        ]
+      },
+      "hibrido": {
+        "position": 1,
+        "top": [
+          "cand-bruno-costa",
+          "cand-ana-silva",
+          "dx-head-data-bank"
+        ]
+      }
+    },
+    {
+      "expected": "cand-diego-souza",
+      "kind": "reference",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-diego-souza",
+          "dx-cfo-agro",
+          "dx-controller"
+        ]
+      },
+      "lexical": {
+        "position": 1,
+        "top": [
+          "cand-diego-souza",
+          "dx-cfo-healthcare",
+          "dx-controller"
+        ]
+      },
+      "hibrido": {
+        "position": 1,
+        "top": [
+          "cand-diego-souza",
+          "dx-controller",
+          "dx-cfo-healthcare"
+        ]
+      }
+    },
+    {
+      "expected": "cand-diego-souza",
+      "kind": "semantic",
+      "denso": {
+        "position": 1,
+        "top": [
+          "cand-diego-souza",
+          "dx-investment-banker",
+          "cand-ana-silva"
+        ]
+      },
+      "lexical": {
+        "position": null,
+        "top": [
+          "dx-investment-banker",
+          "dx-controller",
+          "cand-ana-silva"
+        ]
+      },
+      "hibrido": {
+        "position": 13,
+        "top": [
+          "dx-investment-banker",
+          "cand-ana-silva",
+          "dx-controller"
+        ]
+      }
+    }
+  ]
+}

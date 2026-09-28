@@ -134,7 +134,7 @@ def build_service(settings: Settings, llm: StructuredLLM | None = None) -> Curat
     embedder = Embedder(settings.embedding_model, settings.embedding_cache_dir)
     store = VectorStore(settings.chroma_dir, settings.collection_name, settings.embedding_model)
     ingest(repo, store, embedder)
-    retriever = HybridRetriever(store, embedder)
+    retriever = HybridRetriever(store, embedder, lexical_weight=settings.lexical_weight)
     return CurationService(
         Dependencies(
             settings=settings,

@@ -64,6 +64,29 @@ contexto 2/10: governança de indústria pesada não é o desafio de uma scale-u
 rodadas anteriores ele chegou a ficar atrás da Carolina, que nem é de finanças; entre
 perfis igualmente desalinhados, a ordem varia.
 
+## Recuperação (antes do LLM)
+
+`uv run curator retrieval-eval` indexa, em memória, os 4 currículos junto com 16
+distratores fictícios parecidos com eles e roda 10 consultas: as duas vagas do desafio,
+paráfrases que evitam o vocabulário dos CVs e consultas com armadilhas de palavras-chave.
+Mede se o candidato esperado aparece no topo da busca, sem nenhuma chamada ao modelo.
+
+| Método | Acerto do 1º | Recall@3 | MRR |
+|---|---|---|---|
+| Só vetorial (padrão) | 0,80 | 1,00 | 0,90 |
+| Só BM25 | 0,60 | 0,70 | 0,63 |
+| Híbrido, RRF k=60 | 0,60 | 0,70 | 0,69 |
+
+O caso que decide: na paráfrase da vaga de controladoria industrial, a busca vetorial põe o
+Diego em 1º; o BM25 não o encontra e casa palavras incidentais em outros perfis, e a fusão o
+derruba para 13º. Testei peso do BM25 de 0,2 a 1,0, constante do RRF de 5 a 60 e corte do
+BM25 nos 3 ou 5 primeiros: o melhor híbrido chegou a MRR 0,78. A busca semântica virou o
+padrão (`LEXICAL_WEIGHT=0`).
+
+Com 10 consultas, isso é um teste de regressão, e roda no CI com limite mínimo. A conclusão
+vale para currículos curtos e vagas parafraseadas; numa base real, com nomes de sistemas e
+certificações, o BM25 merece nova avaliação.
+
 ## Comparação entre modelos
 
 O pipeline aceita Claude ou Gemini (`LLM_PROVIDER=gemini`) com os mesmos prompts, busca e

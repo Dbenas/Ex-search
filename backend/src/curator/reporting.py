@@ -53,7 +53,7 @@ def describe_stage(node: str, delta: dict[str, Any]) -> dict[str, Any]:
         case "retrieve":
             items = delta["shortlist"]
             return {
-                "message": f"{len(items)} perfis pré-selecionados por busca híbrida",
+                "message": f"{len(items)} perfis pré-selecionados por busca semântica",
                 "data": {"shortlist": [i.model_dump() for i in items]},
             }
         case "assess":

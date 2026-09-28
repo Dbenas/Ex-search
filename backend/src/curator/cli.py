@@ -83,6 +83,26 @@ def evaluate(
         raise typer.Exit(code=1)
 
 
+@app.command("retrieval-eval")
+def retrieval_eval() -> None:
+    """Search quality before the LLM, with look-alike distractors. No LLM calls."""
+    from curator.evaluation.retrieval import evaluate_retrieval
+    from curator.evaluation.runner import write_report
+    from curator.retrieval.embeddings import Embedder
+
+    s = get_settings()
+    result = evaluate_retrieval(
+        s.candidates_dir,
+        s.eval_cases_path.parent / "retrieval.yaml",
+        Embedder(s.embedding_model, s.embedding_cache_dir),
+    )
+    write_report(result, s.eval_reports_dir / "retrieval.json")
+    typer.echo(f"{result['profiles_indexed']} perfis indexados, {result['queries']} consultas\n")
+    typer.echo(f"{'método':<10}{'acerto@1':>10}{'recall@3':>10}{'MRR':>8}")
+    for mode, m in result["summary"].items():
+        typer.echo(f"{mode:<10}{m['hit_at_1']:>10.2f}{m['recall_at_3']:>10.2f}{m['mrr']:>8.3f}")
+
+
 @app.command("bias-audit")
 def bias_audit(
     empirical: Annotated[

@@ -1,9 +1,11 @@
-"""Hybrid candidate retrieval: dense (semantic) + BM25 (lexical), fused with RRF.
+"""Candidate retrieval: dense (semantic) search, optionally fused with BM25.
 
-Dense retrieval captures intent ("constrói do zero" ~ "escala times do zero");
-BM25 protects exact terms that embeddings tend to blur (M&A, SAP, Series B).
-Reciprocal Rank Fusion combines rankings without calibrating raw scores,
-which live on different scales.
+Dense retrieval captures intent ("constrói do zero" ~ "escala times do zero").
+BM25 can add exact-term matching (SAP, Series B), fused by weighted Reciprocal
+Rank Fusion, which combines rankings without calibrating raw scores. It is off
+by default: on the retrieval benchmark (docs/avaliacao.md) BM25 matched
+incidental words in paraphrased mandates and pushed the right candidate down
+at every weight tried. Worth re-testing on a real base with rare technical terms.
 
 Scores are aggregated from chunks to candidates (parent-document retrieval):
 a candidate ranks by its best-matching passage for each query.
@@ -43,9 +45,10 @@ def _best_per_candidate(hits: Sequence[tuple[str, str, float]]) -> list[tuple[st
 
 
 class HybridRetriever:
-    def __init__(self, store: VectorStore, embedder: Embedder) -> None:
+    def __init__(self, store: VectorStore, embedder: Embedder, lexical_weight: float = 1.0) -> None:
         self._store = store
         self._embedder = embedder
+        self._lexical_weight = lexical_weight
         self._chunks: list[Chunk] = []
         self._bm25: BM25Okapi | None = None
         self.refresh()
@@ -70,25 +73,38 @@ class HybridRetriever:
         ]
         return sorted(hits, key=lambda h: h[2], reverse=True)
 
-    def search(self, queries: Sequence[str], limit: int) -> list[ShortlistEntry]:
-        if not self._chunks:
+    def search(
+        self,
+        queries: Sequence[str],
+        limit: int,
+        dense: bool = True,
+        lexical: bool = True,
+        lexical_weight: float | None = None,
+    ) -> list[ShortlistEntry]:
+        """Fused ranking of candidates; ``dense``/``lexical`` toggle each half for ablations."""
+        w_lex = self._lexical_weight if lexical_weight is None else lexical_weight
+        if not self._chunks or not (dense or lexical):
             return []
 
         fused: dict[str, float] = defaultdict(float)
         evidence: dict[str, set[str]] = defaultdict(set)
-        rankings: list[list[tuple[str, str]]] = []
+        rankings: list[tuple[float, list[tuple[str, str]]]] = []
 
-        for query, vector in zip(queries, self._embedder.embed_queries(queries), strict=True):
-            rankings.append(_best_per_candidate(self._store.query(vector, len(self._chunks))))
-            rankings.append(_best_per_candidate(self._lexical(query)))
+        vectors = self._embedder.embed_queries(queries) if dense else [None] * len(queries)
+        for query, vector in zip(queries, vectors, strict=True):
+            if vector is not None:
+                hits = self._store.query(vector, len(self._chunks))
+                rankings.append((1.0, _best_per_candidate(hits)))
+            if lexical and w_lex > 0:
+                rankings.append((w_lex, _best_per_candidate(self._lexical(query))))
 
-        for ranking in rankings:
+        for weight, ranking in rankings:
             for position, (candidate_id, chunk_id) in enumerate(ranking, start=1):
-                fused[candidate_id] += 1.0 / (RRF_K + position)
+                fused[candidate_id] += weight / (RRF_K + position)
                 evidence[candidate_id].add(chunk_id)
 
         # Normalise so a candidate ranked first everywhere scores 1.0.
-        ceiling = len(rankings) / (RRF_K + 1)
+        ceiling = sum(weight for weight, _ in rankings) / (RRF_K + 1)
         ordered = sorted(fused.items(), key=lambda kv: kv[1], reverse=True)[:limit]
         return [
             ShortlistEntry(

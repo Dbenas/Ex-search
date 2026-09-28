@@ -15,8 +15,8 @@ const STEPS: { stage: StageName; title: string; purpose: string }[] = [
   },
   {
     stage: "retrieve",
-    title: "Busca híbrida",
-    purpose: "Similaridade semântica combinada com termos exatos (M&A, SAP, Series B).",
+    title: "Busca semântica",
+    purpose: "Perfis mais próximos do mandato por significado, não por palavra-chave.",
   },
   {
     stage: "assess",

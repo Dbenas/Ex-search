@@ -45,9 +45,11 @@ teste, 100% das citações foram encontradas nos currículos.
 - **Múltiplas consultas.** O LLM primeiro decompõe a vaga em mandato e consultas curtas
   escritas "como apareceriam num currículo". Isso resolve a assimetria vaga × CV: a vaga
   descreve um desafio, o CV descreve uma trajetória.
-- **Busca híbrida com RRF.** Embeddings capturam intenção ("construir do zero" ≈ "escala
-  times do zero"). BM25 protege termos exatos que embeddings borram (M&A, SAP, Series B).
-  Reciprocal Rank Fusion combina os rankings sem calibrar escalas diferentes.
+- **Busca semântica, com a híbrida testada e descartada.** Embeddings capturam intenção
+  ("construir do zero" ≈ "escala times do zero"). Comecei com busca híbrida (BM25 + RRF),
+  mas o benchmark com distratores mostrou o BM25 piorando os resultados em vagas
+  parafraseadas (MRR 0,69 contra 0,90 da busca só vetorial). A decisão seguiu o dado; o
+  BM25 fica configurável para uma base real com termos técnicos raros.
 - **Embeddings locais `multilingual-e5-large`.** São multilíngues, bons em português e
   assimétricos (prefixos `query:` e `passage:`). Rodam em ONNX dentro do container, então
   os CVs não são enviados a terceiros só para vetorização.

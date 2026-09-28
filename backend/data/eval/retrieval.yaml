@@ -1,0 +1,150 @@
+# Retrieval benchmark (no LLM involved).
+#
+# The four reference CVs are mixed with fictitious distractors that share
+# vocabulary with them (other CFOs, CTOs without AI, AI researchers without
+# leadership...), so retrieval has to discriminate instead of returning the
+# whole base. Each query names the one candidate a partner would expect first.
+# Queries are either paraphrases that avoid the CV's wording (semantic) or
+# contain misleading keywords (trap).
+
+distractors:
+  - id: dx-cto-ecommerce
+    role: CTO, varejo tradicional
+    text: >
+      22 anos em tecnologia de varejo. CTO de rede de lojas com operação consolidada, responsável
+      por ERP, frente de caixa e infraestrutura própria. Gestão de fornecedores e contratos de
+      outsourcing. Perfil estável, foco em continuidade operacional.
+  - id: dx-ai-researcher
+    role: Pesquisador sênior de IA
+    text: >
+      Doutor em aprendizado de máquina, 10 anos em laboratório de pesquisa. Publicações em visão
+      computacional e modelos de linguagem. Contribuidor individual, sem experiência em gestão de
+      times ou em produto comercial.
+  - id: dx-head-data-bank
+    role: Head de Dados, banco
+    text: >
+      15 anos em dados e analytics em banco de grande porte. Lidera governança de dados, catálogo
+      e qualidade de dados regulatória. Ambiente hierárquico e processos maduros de aprovação.
+  - id: dx-cfo-retail
+    role: CFO, varejo
+    text: >
+      20 anos em finanças de varejo de capital aberto. Relação com investidores de bolsa, emissão
+      de debêntures e gestão de capital de giro. Perfil analítico e conservador.
+  - id: dx-cfo-agro
+    role: CFO, agronegócio
+    text: >
+      CFO de cooperativa agroindustrial. Planejamento tributário, hedge de commodities e
+      financiamento com bancos de fomento. Longa carreira em empresa familiar.
+  - id: dx-controller
+    role: Controller, multinacional
+    text: >
+      Controller de multinacional de bens de consumo. Fechamento contábil, IFRS, auditoria externa
+      e implantação de ERP em cinco países. Perfil detalhista, orientado a processos.
+  - id: dx-vp-sales
+    role: VP de Vendas, SaaS
+    text: >
+      VP de Vendas em SaaS B2B com crescimento de 3x em receita recorrente. Montou o time comercial
+      do zero e estruturou a operação de customer success. Perfil agressivo e orientado a metas.
+  - id: dx-coo-logistics
+    role: COO, logística
+    text: >
+      COO de operador logístico com 40 centros de distribuição. Otimização de malha, redução de
+      custos de frete e gestão de 3.000 colaboradores. Perfil de execução e disciplina operacional.
+  - id: dx-ceo-startup
+    role: CEO e fundador, fintech
+    text: >
+      Fundador e CEO de fintech de crédito. Captou rodada seed e Series A com fundos de venture
+      capital. Formação em Administração, sem vivência direta em controladoria ou M&A.
+  - id: dx-investment-banker
+    role: Diretor, banco de investimento
+    text: >
+      Diretor de M&A em banco de investimento, assessorando transações de empresas de
+      infraestrutura. Modelagem de valuation e negociação com compradores estratégicos. Nunca
+      ocupou cargo executivo em empresa operacional.
+  - id: dx-cio-insurance
+    role: CIO, seguradora
+    text: >
+      CIO de seguradora tradicional. Conduziu modernização de sistemas centrais e adoção de nuvem
+      privada. Forte em gestão de riscos, compliance regulatório e relacionamento com auditoria.
+  - id: dx-engineering-manager
+    role: Engineering Manager, big tech
+    text: >
+      Engineering manager em empresa global de tecnologia, liderando 25 engenheiros em
+      infraestrutura de pagamentos. Processos maduros, planejamento trimestral e carreira em
+      Y estruturada.
+  - id: dx-data-scientist
+    role: Cientista de dados sênior
+    text: >
+      Cientista de dados sênior com foco em modelos de crédito e churn. Python, SQL e MLOps.
+      Atuação técnica individual, reportando a um head de dados.
+  - id: dx-cfo-healthcare
+    role: CFO, hospital
+    text: >
+      CFO de rede hospitalar. Negociação com operadoras de saúde, controle de custos assistenciais
+      e reestruturação de dívidas bancárias. Perfil pragmático.
+  - id: dx-product-director
+    role: Diretor de Produto, edtech
+    text: >
+      Diretor de produto em edtech, com experiência em descoberta de produto, experimentação e
+      métricas de engajamento. Trabalha próximo a engenharia, sem programar.
+  - id: dx-transformation-consultant
+    role: Sócio, consultoria de transformação digital
+    text: >
+      Sócio de consultoria que conduz programas de transformação digital e migração para nuvem em
+      grandes bancos. Gestão de programas com centenas de pessoas e comitês executivos.
+
+queries:
+  # --- Carolina: CTO hands-on, IA e dados, construir do zero --------------------------
+  - expected: cand-carolina-mendes
+    kind: reference
+    text: >
+      Startup B2B de rápido crescimento busca CTO com forte viés em IA e dados. Necessário perfil
+      hands-on para escalar o time técnico e construir arquitetura escalável do zero.
+  - expected: cand-carolina-mendes
+    kind: semantic
+    text: >
+      Procuramos liderança de tecnologia que ainda escreva código, domine aprendizado de máquina e
+      goste de montar equipes desde o início em empresa jovem e sem processos.
+  - expected: cand-carolina-mendes
+    kind: trap
+    text: >
+      CTO para empresa de tecnologia com forte presença em dados; a pessoa vai estruturar a área de
+      tecnologia do zero e precisa ter lidado com inteligência artificial em produto.
+  # --- Ana: CFO de growth, captação, M&A ----------------------------------------------
+  - expected: cand-ana-silva
+    kind: reference
+    text: >
+      Empresa de tecnologia em fase de alto crescimento busca CFO para liderar próxima rodada de
+      captação institucional e preparar a empresa para futuro M&A.
+  - expected: cand-ana-silva
+    kind: semantic
+    text: >
+      Queremos um executivo de finanças que já tenha levantado capital com investidores de risco
+      em estágio avançado e saiba conduzir a venda ou fusão da companhia.
+  - expected: cand-ana-silva
+    kind: trap
+    text: >
+      CFO para reestruturação financeira de fintech em crescimento, com experiência em rodadas
+      Series B e C.
+  # --- Bruno: CIO, migração para nuvem, governança, times grandes ---------------------
+  - expected: cand-bruno-costa
+    kind: reference
+    text: >
+      Banco tradicional busca executivo de tecnologia para conduzir a migração completa dos
+      sistemas legados para a nuvem, com gestão de estruturas de centenas de pessoas.
+  - expected: cand-bruno-costa
+    kind: semantic
+    text: >
+      Instituição financeira precisa de liderança de TI que modernize a plataforma antiga, leve
+      tudo para GCP e AWS e mantenha estabilidade e governança durante a transição.
+  # --- Diego: CFO de controle, compliance, SAP, indústria ----------------------------
+  - expected: cand-diego-souza
+    kind: reference
+    text: >
+      Indústria de base busca CFO focado em controle de custos, compliance e auditoria, com
+      experiência em implantação global de SAP.
+  - expected: cand-diego-souza
+    kind: semantic
+    text: >
+      Grupo industrial precisa de um diretor financeiro rigoroso para reforçar controles internos,
+      preparar a empresa para auditorias e unificar o sistema de gestão entre países.

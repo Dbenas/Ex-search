@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     eval_cases_path: Path = BACKEND_ROOT / "data" / "eval" / "jobs.yaml"
     eval_reports_dir: Path = BACKEND_ROOT / "reports"
     feedback_path: Path = BACKEND_ROOT / ".runtime" / "feedback.jsonl"
+    # Weight of BM25 in the rank fusion. 0 = semantic search only, the default after
+    # the retrieval benchmark (docs/avaliacao.md) showed BM25 adding noise on paraphrases.
+    lexical_weight: float = Field(default=0.0, ge=0, le=1)
     shortlist_size: int = Field(default=6, ge=3, le=20)
     top_k: int = Field(default=3, ge=1, le=5)
 

@@ -11,7 +11,7 @@ flowchart LR
     subgraph API["Cloud Run · FastAPI"]
         G[LangGraph<br/>fluxo de curadoria]
         P[Pseudonimização<br/>e redação de PII]
-        R[Busca híbrida<br/>e5 local + BM25 · RRF]
+        R[Busca semântica<br/>e5 local · RRF entre consultas]
         V[(Chroma)]
         GR[Verificação de<br/>evidências]
     end
@@ -40,7 +40,7 @@ flowchart LR
 |---|---|---|
 | `sanitize` | código | Remove e-mail, telefone, CPF/CNPJ, URLs e nomes conhecidos da vaga |
 | `analyze_job` | LLM | Estrutura o mandato: requisitos essenciais/desejáveis e consultas de busca |
-| `retrieve` | código | Busca híbrida com várias consultas (vaga + mandato + consultas geradas) |
+| `retrieve` | código | Busca semântica com várias consultas (vaga + mandato + consultas geradas); BM25 opcional |
 | `assess` | LLM, paralelo | Nota por dimensão, evidências com citação literal, lacunas, pontos de entrevista |
 | `rank` | código | Confere cada citação no CV, calcula a nota ponderada (pesos por execução), ordena e mapeia a cobertura dos requisitos essenciais |
 | `synthesize` | LLM | Parecer comparativo usando só evidências confirmadas |

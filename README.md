@@ -28,8 +28,8 @@ Pareceres completos, notas do juiz automático e análise crítica em
 ## Como funciona
 
 ```
-vaga ─▶ remove PII ─▶ lê o mandato ─▶ busca híbrida ─▶ avalia cada perfil ─▶ verifica ─▶ parecer
-                       (LLM)          (e5 + BM25)      (LLM, em paralelo)   evidências   (LLM)
+vaga ─▶ remove PII ─▶ lê o mandato ─▶ busca semântica ─▶ avalia cada perfil ─▶ verifica ─▶ parecer
+                       (LLM)          (e5 + Chroma)      (LLM, em paralelo)   evidências   (LLM)
                                                                             e cobertura  ─▶ plano de busca
                                                                                             (LLM, se preciso)
 ```
@@ -38,8 +38,10 @@ vaga ─▶ remove PII ─▶ lê o mandato ─▶ busca híbrida ─▶ avalia 
    pseudonimizados (`CANDIDATO_01`); os nomes voltam na tela.
 2. **Leitura do mandato.** O LLM separa requisitos essenciais e desejáveis e gera consultas
    de busca escritas "como apareceriam num CV".
-3. **Busca híbrida.** Embeddings locais `multilingual-e5-large` (intenção) + BM25 (termos
-   exatos como M&A, SAP, Series B), combinados por Reciprocal Rank Fusion.
+3. **Busca semântica.** Embeddings locais `multilingual-e5-large` no ChromaDB, com várias
+   consultas por vaga (texto original, mandato e consultas geradas), fundidas por Reciprocal
+   Rank Fusion. O BM25 também está implementado, mas fica desligado: no benchmark de
+   recuperação ele piorou os resultados (ver abaixo).
 4. **Avaliação individual.** Uma chamada por candidato, em paralelo: nota de 0 a 10 em hard
    skills, soft skills e fit de contexto, evidências com citação literal, lacunas e pontos
    para entrevista.
@@ -106,6 +108,24 @@ e uma nota de metodologia. O PDF é gerado no navegador, sem enviar o parecer a 
 serviço. Exemplos: [parecer CTO](docs/exemplos/parecer-cto.pdf) ·
 [parecer CFO](docs/exemplos/parecer-cfo.pdf).
 
+## Uma decisão que os dados mudaram
+
+O projeto começou com busca híbrida (vetorial + BM25), a escolha padrão de mercado. Para
+testá-la, `curator retrieval-eval` mistura os 4 currículos com 16 distratores parecidos
+(outros CFOs, CTOs sem IA, pesquisador de IA sem liderança) e mede se o candidato certo
+aparece no topo, antes de qualquer LLM:
+
+| Método | Acerto do 1º | Recall@3 | MRR |
+|---|---|---|---|
+| **Só vetorial (padrão)** | **0,80** | **1,00** | **0,90** |
+| Só BM25 | 0,60 | 0,70 | 0,63 |
+| Híbrido (RRF) | 0,60 | 0,70 | 0,69 |
+
+Em vagas parafraseadas, o BM25 casa palavras incidentais e empurra o candidato certo para
+baixo; nenhuma combinação de peso e parâmetro testada superou a busca só vetorial. A busca
+semântica virou o padrão, e o BM25 segue disponível (`LEXICAL_WEIGHT`) para reavaliar numa
+base real, onde termos raros podem mudar o resultado.
+
 ## Stack e por quê
 
 | Escolha | Motivo |
@@ -159,6 +179,7 @@ npm run dev                   # http://localhost:3000
 uv run curator match minha-vaga.txt     # roda o agente para uma vaga em arquivo
 uv run curator evaluate                 # vagas de teste + juiz; grava reports/evaluation-<modelo>.json
 uv run curator bias-audit               # invariância a nome e gênero, sem chamar o modelo
+uv run curator retrieval-eval           # qualidade da busca com distratores, sem chamar o modelo
 ```
 
 **Qualidade**
@@ -210,7 +231,7 @@ backend/
   src/curator/
     agent/        grafo LangGraph, prompts, cliente do LLM, verificação de evidências
     ingestion/    leitura dos CVs, chunking por sentença, pipeline idempotente
-    retrieval/    embeddings, Chroma, busca híbrida com RRF
+    retrieval/    embeddings, Chroma, busca semântica (BM25 opcional) com RRF
     privacy/      pseudonimização e redação de PII
     evaluation/   hit@1, MRR, grounding e LLM-as-judge
     api/          FastAPI, SSE, autenticação e rate limit
@@ -223,8 +244,9 @@ docs/             arquitetura, avaliação, respostas às perguntas técnicas
 
 ## Limitações do protótipo
 
-- **Base de 4 perfis.** A busca é trivial nessa escala e todos os candidatos chegam à
-  avaliação. O valor da busca híbrida aparece com centenas de CVs, e isso não foi medido aqui.
+- **Base pequena.** Com 4 perfis, todos chegam à avaliação. O benchmark de recuperação usa
+  20 perfis (16 distratores fictícios) e 10 consultas: é um teste de regressão, não uma
+  medida estatística; o ideal é repeti-lo com uma base real.
 - **Detecção de PII por regex e lista de nomes.** Funciona para os campos estruturados, mas
   não detecta nomes de terceiros no corpo do CV. Em produção: DLP com NER.
 - **Avaliação com 2 casos e juiz do mesmo modelo.** Serve como teste de regressão, não como
