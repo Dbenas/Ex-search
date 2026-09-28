@@ -41,6 +41,10 @@ Thumbs.db
 # Local tooling
 .claude/
 CLAUDE.md
+AGENTS.md
+# Personal study notes and the challenge brief transcription
+GUIA-DO-PROJETO.md
+desafio-tecnico-*.md
 
 # Challenge brief (not redistributed)
 *.pdf

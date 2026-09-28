@@ -25,6 +25,19 @@ O caso interessante é o que o sistema **não** faz:
 Pareceres completos, notas do juiz automático e análise crítica em
 [docs/avaliacao.md](docs/avaliacao.md).
 
+## O que o desafio pede e onde está
+
+| Requisito | Onde |
+|---|---|
+| 1. Framework de orquestração e LLM, com justificativa | LangGraph + Claude; [Stack e por quê](#stack-e-por-quê) |
+| 2. Pipeline de ingestão e RAG com banco vetorial | `backend/src/curator/ingestion`, `retrieval` (ChromaDB) |
+| 3. Agente: JD como entrada, busca semântica, Top 3 com parágrafo de hard e soft skills | `backend/src/curator/agent/graph.py`; tela *Nova análise* |
+| 4. Base fictícia e vagas de teste | `backend/data/candidates`, `backend/data/eval/jobs.yaml` |
+| 5. Interface para o sócio | `frontend/` (Next.js) |
+| 6. Teste com as duas vagas | [Resultado](#resultado-nas-vagas-de-teste) e [docs/avaliacao.md](docs/avaliacao.md) |
+| 7. README, diagrama de produção, limitações e próximos passos | Este arquivo |
+| Perguntas da parte falada | [docs/perguntas-tecnicas.md](docs/perguntas-tecnicas.md) |
+
 ## Como funciona
 
 ```
@@ -54,7 +67,27 @@ vaga ─▶ remove PII ─▶ lê o mandato ─▶ busca semântica ─▶ avali
 Cada análise registra tokens e custo estimado: com Claude Opus 5, cerca de 53 s e US$ 0,26
 para 4 candidatos.
 
-Arquitetura e desenho de produção no GCP: [docs/architecture.md](docs/architecture.md).
+## Arquitetura em produção (GCP)
+
+```mermaid
+flowchart LR
+    S[Sócios] --> IAP[IAP · SSO corporativo]
+    IAP --> FE[Cloud Run<br/>interface]
+    FE --> API[Cloud Run<br/>agente LangGraph]
+    API --> VAI[Vertex AI<br/>Claude ou Gemini]
+    API --> VS[(Vertex AI<br/>Vector Search)]
+    API --> SQL[(Cloud SQL<br/>identidades · CMEK)]
+    API --> BQ[(BigQuery<br/>feedback e métricas)]
+    GCS[(Cloud Storage<br/>CVs · CMEK)] -->|upload| ING[Cloud Run Job<br/>ingestão]
+    ING --> DLP[Sensitive Data<br/>Protection]
+    DLP -->|texto pseudonimizado| VS
+    DLP -->|identidade| SQL
+```
+
+Tudo dentro de um perímetro VPC Service Controls: o modelo roda no Vertex AI (dados do
+cliente não treinam modelos), identidade e conteúdo ficam em bases separadas e a
+pseudonimização acontece na ingestão. Detalhes, fluxo do agente e custo em
+[docs/architecture.md](docs/architecture.md).
 
 ## Além do pedido
 
@@ -141,7 +174,11 @@ base real, onde termos raros podem mudar o resultado.
 
 ## Rodando localmente
 
-Requisitos: [uv](https://docs.astral.sh/uv/), Node 20+ e uma chave da Anthropic.
+Requisitos: [uv](https://docs.astral.sh/uv/) (instala o Python 3.12 sozinho) e Node 20+.
+A chave da Anthropic só é necessária para rodar análises; testes, auditoria de viés,
+benchmark de recuperação, base de perfis e upload de currículos funcionam sem ela.
+No Windows, clone numa pasta de caminho curto (ex: `C:\dev\ex-search`), por causa do
+limite de 260 caracteres de caminho.
 
 **Atalho: tudo com um comando, a partir da raiz**
 
@@ -185,7 +222,7 @@ uv run curator retrieval-eval           # qualidade da busca com distratores, se
 **Qualidade**
 
 ```bash
-uv run pytest                 # 51 testes; o LLM é substituído por um fake determinístico
+uv run pytest                 # 56 testes; o LLM é substituído por um fake determinístico
 uv run ruff check . && uv run mypy src
 ```
 
@@ -229,12 +266,13 @@ Importe o repositório com *Root Directory* `frontend` e defina `BACKEND_URL`,
 ```
 backend/
   src/curator/
-    agent/        grafo LangGraph, prompts, cliente do LLM, verificação de evidências
-    ingestion/    leitura dos CVs, chunking por sentença, pipeline idempotente
+    agent/        grafo LangGraph, prompts, clientes do LLM, evidências e cobertura
+    ingestion/    leitura dos CVs, PDF/LinkedIn, chunking por sentença, pipeline idempotente
     retrieval/    embeddings, Chroma, busca semântica (BM25 opcional) com RRF
     privacy/      pseudonimização e redação de PII
-    evaluation/   hit@1, MRR, grounding e LLM-as-judge
+    evaluation/   avaliação das vagas, benchmark de recuperação, auditoria de viés
     api/          FastAPI, SSE, autenticação e rate limit
+    service.py    orquestração; reporting.py e candidates.py com relatório e regras da base
   data/           currículos (front matter com identidade + texto) e vagas de teste
   tests/
 frontend/         Next.js: mesa do sócio, base de perfis, página de avaliação
@@ -256,13 +294,15 @@ docs/             arquitetura, avaliação, respostas às perguntas técnicas
   reindexa a cada cold start.
 - **Latência de 45 a 60 s** por análise com Opus. O streaming mitiga a espera, mas não o
   custo.
+- **PDF escaneado não é lido** (sem OCR), e a importação do LinkedIn depende do layout atual
+  da exportação; se o LinkedIn mudar o modelo, cai no leitor genérico de PDF.
 
 ## Próximos passos
 
 1. Golden set com mandatos reais e shortlists dos sócios; métrica principal passa a ser
    concordância (precision@3, NDCG).
 2. Calibrar pesos e o limiar de verificação com o feedback registrado na interface.
-3. Ingestão de PDF/DOCX com chunking por seção e metadados de período (recência).
+3. DOCX e OCR na ingestão, com chunking por seção e metadados de período (recência).
 4. Sensitive Data Protection com tokenização reversível e Vertex AI Vector Search.
 5. Critérios de exclusão explícitos (conflito de interesse, cliente atual, non-compete) como
    filtro antes da busca.
