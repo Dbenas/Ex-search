@@ -13,9 +13,11 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY src ./src
 RUN uv sync --frozen --no-dev
 # Bake the embedding model into the image: no download at cold start and
-# no outbound call from the running service to fetch it.
-RUN .venv/bin/python -c "from fastembed import TextEmbedding; \
-TextEmbedding('intfloat/multilingual-e5-large', cache_dir='/app/.models')"
+# no outbound call from the running service to fetch it. Same code path as the
+# app, so the files land where the Embedder looks for them.
+RUN .venv/bin/python -c "from pathlib import Path; \
+from curator.retrieval.embeddings import Embedder; \
+Embedder('intfloat/multilingual-e5-large', Path('/app/.models')).download()"
 
 FROM base AS runtime
 RUN useradd --create-home --uid 10001 app \
